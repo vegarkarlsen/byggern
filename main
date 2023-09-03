@@ -5,6 +5,10 @@
  * Created: 29.08.2023 18:56:22
  * Author : vegkar
  */ 
+
+// this is outdated
+
+
 #define FOSC 4915200
 #define BAUD 9600
 #define MYUBRR FOSC/16/BAUD-1
