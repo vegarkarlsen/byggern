@@ -18,7 +18,7 @@ int main(void)
 	
 	while (1)
 	{
-		printf("halla");
+		printf("test  ---- \r\n");
 		
 	}
 }
