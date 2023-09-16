@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-void ADC_timer();
+void ADC_timer_init();
 
 
-uint8_t read_channel_1();
+uint8_t read_channel(uint8_t channel);

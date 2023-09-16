@@ -13,16 +13,20 @@
 #define MYUBRR FOSC/16/BAUD-1
 #define F_CPU 16000000
 
-uint8_t adc_value = 1;
+uint8_t joy_x = -1;
+uint8_t joy_y = -1;
+
 int main(void)
 {
     USART0_init( MYUBRR );
     SRAM_init(); // this is genreal for databus
     SRAM_test();
-    ADC_timer();
+    ADC_timer_init();
      
 	while (1){
-        adc_value = read_channel_1();
-        printf("ADC value: %2d \r\n", adc_value);
+        joy_x = read_channel(0);
+        joy_y = read_channel(1);
+
+        printf("joysick (x, y): (%2d, %2d) \r\n",joy_x, joy_y);
 	}
 }
