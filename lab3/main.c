@@ -8,18 +8,18 @@
 #include <avr/io.h>
 #include "USART_driver.h"
 #include <stdio.h>
+#include <util/delay.h>
+#include "SRAM_test.h"
 
 
 int main(void)
 {
-	/* Replace with your application code */
+    USART0_init( MYUBRR );
+    SRAM_init();
 
-	USART0_init ( MYUBRR );
-	
-	while (1)
-	{
-        // USART0_transmit('a');
-		printf("test  ---- \r\n");
-		
+    SRAM_test();
+
+	while (1){
+
 	}
 }

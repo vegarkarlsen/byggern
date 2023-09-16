@@ -30,11 +30,16 @@ void test_latch_output(){
 }
 
 void test_latch_value(){
+    uint8_t retrived_value;
+
     for (uint8_t val = 0; val < 256; val += val){
         if (val == 0) val = 1;
         PORTA = val;
-        printf("\r\nsetting PORTA to %02X\r\n", val);
-        _delay_ms(3000);        
+        retrived_value = DDRA;
+        _delay_ms(1500);        
+        printf("setting PORTA to %02X ", val);
+        _delay_ms(1500);
+        printf("reading value from DDRA: %02X\r\n", retrived_value);        
     }
 }
 
@@ -45,17 +50,20 @@ int main(void)
     // DDRA = 0b11111111;
     // DDRE = 0b00000111;
 
-    // setup SUART configs
+    // setup UART configs
 	USART0_init ( MYUBRR );
-    // SRAM_init();
+    SRAM_init();
 	
-    // test_latch();
+    // test_latch_value();
 
     // SRAM_test();
-    test_latch_value();
+    // volatile char *ext_ram = (char *) 0x1400; // Start address
+    // uint8_t var;  
 	while (1)
 	{
-
-
+        // USART0_transmit('b');
+        // printf("hei");
+        // var = ext_ram[1];
+        // printf(" %02X ", var); 
 	}
 }
