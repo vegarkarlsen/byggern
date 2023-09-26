@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c USART_driver.c SRAM_test.c ADC_driver.c util.c OLED_driver.c 
+SOURCE_FILES := main.c USART_driver.c SRAM_test.c ADC_driver.c util.c OLED_driver.c OLED_menu.c
 
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
