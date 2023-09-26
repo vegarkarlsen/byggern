@@ -19,11 +19,7 @@ void ADC_timer_init() {
     TCCR1B = (1 << WGM12) | (1 << CS10); // CTSmode, No scaler
     OCR0 = 1;
 }
-/* channels */
-/*     0 : joystick x  */
-/*     1 : joystick Y */
-/*     2 : slider left */
-/*     3 : slider right */
+
 uint8_t read_channel(Channel channel) {
 
     volatile char *adc = (char *)ADC_START_ADRESS;
