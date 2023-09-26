@@ -73,6 +73,7 @@ int8_t read_joystick_channel_transformed(Channel channel, int8_t offset) {
     uint8_t channel_data = read_channel(channel);
     uint8_t zeropoint;
     int8_t output;
+    uint8_t min_raw_value = 3;
 
     zeropoint = get_zeropoint_from_channel(channel);
 
@@ -82,7 +83,7 @@ int8_t read_joystick_channel_transformed(Channel channel, int8_t offset) {
     }
     // map down
     else if (channel_data < zeropoint - offset) {
-        output = map(channel_data, zeropoint - offset, 3, -100, 0);
+        output = map(channel_data, zeropoint - offset, min_raw_value, -100, 0);
     } else {
         output = 0;
     }
