@@ -2,6 +2,9 @@
 #include "OLED_driver.h"
 #include "include/fonts.h"
 #include <avr/io.h>
+#include <avr/pgmspace.h>
+#include <stdint.h>
+#include <string.h>
 
 void OLED_write_command(uint8_t cmd) {
     volatile char *command = (char *)OLED_COMMAND_START_ADRESS;
@@ -40,7 +43,7 @@ void OLED_init() {
 void OLED_go_line(int line) { OLED_write_command(0xB0 + line); }
 
 void OLED_go_col(int col) {
-    OLED_write_command(0x00 + (col & 16)); // Lower nibble
+    OLED_write_command(0x00 + (col % 16)); // Lower nibble
     OLED_write_command(0x10 + (col / 16)); // Higher nibble
 }
 
@@ -59,8 +62,36 @@ void OLED_clear_screen() {
     }
 }
 
+// this takes inn correct char value
+uint8_t OLED_get_font_byte(int c, int byte, int font_size) {
+    switch (font_size) {
+    case 4:
+        return pgm_read_byte(&font4[c][byte]);
+    case 5:
+        return pgm_read_byte(&font5[c][byte]);
+    case 8:
+        return pgm_read_byte(&font8[c][byte]);
+    default:
+        return 0x00;
+    }
+}
+
+void OLED_printChar(char c, int font_size) {
+    int c_with_offsett = c - 32; // correct char value according to font format
+    for (uint8_t byte = 0; byte < font_size; byte++) {
+        uint8_t font_byte = OLED_get_font_byte(c_with_offsett, byte, font_size);
+        OLED_write_data(font_byte);
+    }
+}
+
+void OLED_print(char *str, int font_size) {
+    for (int c = 0; c < strlen(str); c++) {
+        OLED_printChar(str[c], font_size);
+    }
+}
+
 void OLED_printChar8(char c) {
-    int c_with_offsett = c - 32;
+    int c_with_offsett = c - 32; // correct char value according to font format
     for (uint8_t i = 0; i < 7; i++) {
         uint8_t font_byte = pgm_read_byte(&font8[c_with_offsett][i]);
         OLED_write_data(font_byte);

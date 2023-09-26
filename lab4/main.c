@@ -40,20 +40,25 @@ int main(void) {
     OLED_init();
     // need to define printf here to use it in other functions
     fdevopen(USART0_transmit, USART0_receive);
-    calibrate_zero_point(10);
+    /* calibrate_zero_point(10); */
 
     OLED_clear_screen();
-    OLED_go_line(0);
-    /* OLED_print8("Hello World!"); */
-
+    OLED_move(0, 0);
+    OLED_print("font 4", 4);
+    OLED_move(1, 0);
+    OLED_print("font 5", 5);
+    OLED_move(2, 0);
+    OLED_print("font 8", 8);
     while (1) {
-        uint8_t raw_joy_x = read_channel(JOYSTICK_CHANNEL_X);
-        uint8_t raw_joy_y = read_channel(JOYSTICK_CHANNEL_y);
-        int8_t joy_x = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 3);
-        int8_t joy_y = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 3);
+        /* uint8_t raw_joy_x = read_channel(JOYSTICK_CHANNEL_X); */
+        /* uint8_t raw_joy_y = read_channel(JOYSTICK_CHANNEL_y); */
+        /* int8_t joy_x = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X,
+         * 3); */
+        /* int8_t joy_y = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y,
+         * 3); */
 
-        printf("%2d, %2d\r\n", raw_joy_x, raw_joy_y);
-        printf("%2d, %2d\r\n", joy_x, joy_y);
+        /* printf("%2d, %2d\r\n", raw_joy_x, raw_joy_y); */
+        /* printf("%2d, %2d\r\n", joy_x, joy_y); */
 
         /* slider_left = read_channel(2); */
         /* slider_right = read_channel(3); */
