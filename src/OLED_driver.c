@@ -1,6 +1,6 @@
 #pragma once
 #include "OLED_driver.h"
-#include "include/fonts.h"
+#include "fonts.h"
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <stdint.h>
