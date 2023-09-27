@@ -1,11 +1,13 @@
-# List all source files to be compiled; separate with space
-SOURCE_FILES := main.c USART_driver.c SRAM_test.c ADC_driver.c util.c OLED_driver.c OLED_menu.c
 
+# set SOURCE_FILES to all .c files in src
+SOURCE_FILES := $(shell find $(src) -name *.c)
+
+# include dir (location of .h files)  TODO: maby add full path
+INCLUDE_DIR := include
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
 
-# Feel free to ignore anything below this line
 PROGRAMMER := atmelice_isp
 ifeq ($(PROGRAM_WITH_JTAG), yes)
 	PROGRAMMER := atmelice
@@ -17,13 +19,16 @@ TARGET_DEVICE := m162
 
 CC := avr-gcc
 CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb
+CFLAGS += -I$(INCLUDE_DIR)
+
 
 OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
+
 
 .DEFAULT_GOAL := $(BUILD_DIR)/main.hex
 
 $(BUILD_DIR):
-	mkdir $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)/src
 
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -52,3 +57,10 @@ debug:
 	sleep 2
 	avr-gdb -tui -iex "target remote localhost:4242" $(BUILD_DIR)/a.out
 	killall -s 9 avarice	
+
+.PHONY: verbose
+verbose:
+	$(info $$SOURCE_FILES is [${SOURCE_FILES}])
+	$(info $$OBJECT_FILES is [${OBJECT_FILES}])
+	$(info using $$CFLAGS [${CFLAGS}])
+
