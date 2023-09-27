@@ -3,7 +3,7 @@
 SOURCE_FILES := $(shell find $(src) -name *.c)
 
 # Specify all include dirs (.h files location) with spaces  TODO: mabye add full path?
-INCLUDE_DIR := include
+INCLUDE_DIR := include fonts
 
 # This formats the include parameters correct
 INCLUDE_PARAMS = $(INCLUDE_DIR:%=-I%)
