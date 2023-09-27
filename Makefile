@@ -2,8 +2,12 @@
 # set SOURCE_FILES to all .c files in src
 SOURCE_FILES := $(shell find $(src) -name *.c)
 
-# include dir (location of .h files)  TODO: maby add full path
+# Specify all include dirs (.h files location) with spaces  TODO: mabye add full path?
 INCLUDE_DIR := include
+
+# This formats the include parameters correct
+INCLUDE_PARAMS = $(INCLUDE_DIR:%=-I%)
+
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
@@ -19,7 +23,7 @@ TARGET_DEVICE := m162
 
 CC := avr-gcc
 CFLAGS := -O -std=c11 -mmcu=$(TARGET_CPU) -ggdb
-CFLAGS += -I$(INCLUDE_DIR)
+CFLAGS += $(INCLUDE_PARAMS)
 
 
 OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
