@@ -1,6 +1,8 @@
 
 # set SOURCE_FILES to all .c files in src
-SOURCE_FILES := $(shell find $(src) -name *.c)
+# SOURCE_FILES := $(shell find $(src/) -name *.c)
+SOURCE_DIR := src/
+SOURCE_FILES := $(foreach sdir,$(SOURCE_DIR),$(wildcard $(sdir)*.c))
 
 # Specify all include dirs (.h files location) with spaces  TODO: mabye add full path?
 INCLUDE_DIR := include fonts
