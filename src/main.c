@@ -1,9 +1,12 @@
 
 #include "ADC_driver.h"
+#include "MCP2515_driver.h"
 #include "OLED_driver.h"
 #include "OLED_menu.h"
+#include "SPI_driver.h"
 #include "SRAM_test.h"
 #include "USART_driver.h"
+#include "mcp2515.h"
 #include "util.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -11,47 +14,72 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <util/delay.h>
-// #include "include/fonts.h"
+/* #include "include/fonts.h" */
 
 #define FOSC 4915200 // Clock Speed
 #define BAUD 9600
 #define MYUBRR FOSC / 16 / BAUD - 1
 #define F_CPU 16000000
 
-int8_t joy_x;
-int8_t joy_y;
-uint8_t slider_left;
-uint8_t slider_right;
+/* int8_t joy_x; */
+/* int8_t joy_y; */
+/* uint8_t slider_left; */
+/* uint8_t slider_right; */
+/**/
 
 int option_select = 0;
 int menu_level = 0;
+/**/
+/* bool p0 = 0; */
+/* bool p1 = 0; */
+/* bool p2 = 0; */
+/**/
+/* uint8_t test; */
 
-bool p0 = 0;
-bool p1 = 0;
-bool p2 = 0;
+/* void testMCP(){ */
+/*     uint8_t write = 59; */
+/*     uint8_t read; */
+/*     MCP_write(); */
+/*     read = MCP_read(); */
+/**/
+/*     printf("sending %2d\r\n", write); */
+/*     printf("reading %2d\r\n", read); */
+/**/
+/**/
+/* } */
 
 int main(void) {
     USART0_init(MYUBRR);
-    SRAM_init(); // this is genreal for databus
+    /* SRAM_init(); // this is genreal for databus  */
     // SRAM_test();
-    ADC_timer_init();
-    OLED_init();
+    /* ADC_timer_init(); */
+    /* OLED_init(); */
     // need to define printf here to use it in other functions
     fdevopen(USART0_transmit, USART0_receive);
-    calibrate_zero_point(10);
+
+    MCP_init();
+
+    /* calibrate_zero_point(10); */
 
     // OLED_clear_screen();
     // OLED_go_line(0);
     // OLED_print8("Htest123!");
-    home_screen_print();
+    /* home_screen_print(); */
 
+    /* SPI_master_init(); */
+    uint8_t data;
     while (1) {
-        _delay_ms(500);
 
-        joy_x = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 3);
-        joy_y = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 3);
-        uint8_t raw_x = read_channel(JOYSTICK_CHANNEL_X);
-        uint8_t raw_y = read_channel(JOYSTICK_CHANNEL_y);
+        /* _delay_ms(500);  */
+        MCP_write(0x41, 0xA7);
+        data = MCP_read(0x41);
+        printf("data= 0x%x\n\r", data);
+        /* SPI_transmit(0x69); */
+
+        /* joy_x = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 3); */
+        /* joy_y = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 3); */
+        /* uint8_t raw_x = read_channel(JOYSTICK_CHANNEL_X); */
+        /* uint8_t raw_y = read_channel(JOYSTICK_CHANNEL_y); */
 
         /* slider_left = read_channel(SLIDER_CHANNEL_LEFT); */
         /* slider_right = read_channel(SLIDER_CHANNEL_RIGHT); */
@@ -62,20 +90,20 @@ int main(void) {
         // struct Position pos = calculate_direction_joy(joy_x_per, joy_y_per);
 
         // screen
-        option_change(joy_y);
-        home_screen_print();
+        /* option_change(joy_y); */
+        /* home_screen_print(); */
 
         // read button values
-        p0 = PINB & (1 << PB0);
-        p1 = PINB & (1 << PB1);
-        p2 = !(PINB & (1 << PB2));
-        if (p2 == 1) {
-            menu_level_select();
-        }
+        /* p0 = PINB & (1 << PB0); */
+        /* p1 = PINB & (1 << PB1); */
+        /* p2 = !(PINB & (1 << PB2)); */
+        /* if (p2 == 1) { */
+        /*     menu_level_select(); */
+        /* } */
 
         /* printf("3 : %2d\r\n", test); */
-        printf("%2d \r\n", PINB);
-        printf("p0: %2d p1: %2d p2: %2d \r\n", p0, p1, p2);
+        /* printf("%2d \r\n", PINB); */
+        /* printf("p0: %2d p1: %2d p2: %2d \r\n", p0, p1, p2); */
         /* printf("joysick (x, y): (%2d, %2d) \r\n", joy_x, joy_y); */
         /* printf("joysick (x, y): (%2d, %2d) \r\n", raw_x, raw_y); */
         // printf("slider (LEFT, RIGHT): (%2d, %2d) \r\n", slider_left,
