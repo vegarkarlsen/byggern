@@ -63,21 +63,19 @@ int main(void) {
 
         // screen
         option_change(joy_y);
+        menu_level_select(joy_x);
         home_screen_print();
 
         // read button values
         p0 = PINB & (1 << PB0);
         p1 = PINB & (1 << PB1);
         p2 = !(PINB & (1 << PB2));
-        if (p2 == 1) {
-            menu_level_select();
-        }
 
         /* printf("3 : %2d\r\n", test); */
-        printf("%2d \r\n", PINB);
-        printf("p0: %2d p1: %2d p2: %2d \r\n", p0, p1, p2);
-        /* printf("joysick (x, y): (%2d, %2d) \r\n", joy_x, joy_y); */
-        /* printf("joysick (x, y): (%2d, %2d) \r\n", raw_x, raw_y); */
+        /*printf("%2d \r\n", PINB);
+        printf("p0: %2d p1: %2d p2: %2d \r\n", p0, p1, p2);*/
+        printf("joysick (x, y): (%2d, %2d) \r\n", joy_x, joy_y); 
+        /*printf("joysick (x, y): (%2d, %2d) \r\n", raw_x, raw_y); */
         // printf("slider (LEFT, RIGHT): (%2d, %2d) \r\n", slider_left,
         // slider_right);
     }

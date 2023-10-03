@@ -45,25 +45,27 @@ void home_screen_print(){
     };
 }
 
-void option_change(int joy_val){
-    if (joy_val>0){
+void option_change(int joy_val_y){
+    if (joy_val_y>0){
         option_select -= 1;
         //home_screen_print();
         _delay_ms(200);
     }
-    else if (joy_val<0){
+    else if (joy_val_y<0){
         option_select += 1;
         //home_screen_print();
         _delay_ms(200);
     }
 }
 
-void menu_level_select(){
-    if (option_select==0 || menu_level == 0){
+void menu_level_select(int joy_val_x){
+    if (option_select==0 && menu_level == 0 && joy_val_x>0){
         menu_level = 1;
+        option_select = 0;
     }
 
-    else if(option_select == 1 || menu_level == 1){
+    else if(option_select == 1 && menu_level == 1 && joy_val_x<0){
         menu_level = 0;
+        option_select = 0;
     }
 }
