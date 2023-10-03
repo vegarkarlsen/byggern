@@ -1,0 +1,6 @@
+
+- make local copy of the display data in the SRAM, and set an fps to periodically update to display
+
+
+- Calibrate joistikc
+    on a button press
