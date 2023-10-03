@@ -1,6 +1,8 @@
 
 - make local copy of the display data in the SRAM, and set an fps to periodically update to display
 
+-- SRAM:
+    should fix, it is now called SRAM_test?
 
 - Calibrate joistikc
     on a button press
