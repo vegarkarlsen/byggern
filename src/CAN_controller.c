@@ -32,9 +32,9 @@ void CAN_send(uint8_t buffer, canPack_ptr can_pack){
     // ID
     uint8_t high = (can_pack->ID >> 3);
     uint8_t low = (can_pack->ID << 5);
-    MCP_write(buffer_adress +1, high);
-    MCP_write(buffer_adress + 2, low);
-    printf("s heigh: 0x%x, low: 0x%x\r\n", high, low);
+    MCP_write(buffer_adress +1, (uint8_t) high);
+    MCP_write(buffer_adress + 2, (uint8_t) low);
+    /* printf("s heigh: 0x%04x, low: 0x%04x\r\n", high, low); */
 
     // data lenght
     MCP_write(buffer_adress + 5, can_pack->len);
@@ -63,13 +63,12 @@ uint8_t get_recive_buffer_adress(uint8_t buffer){
 canPack_t CAN_revice(uint8_t buffer){
     uint8_t buffer_adress = get_recive_buffer_adress(buffer);
 
-    canPack_t can_pack;
-    // ID = (high << 3) | low
     uint8_t high = MCP_read(buffer_adress + 1);
     uint8_t low = MCP_read(buffer_adress + 2);
+    canPack_t can_pack;
+    can_pack.ID = (high << 3) | (low >> 5);
     /* can_pack.ID = (high >> 3) | low; */
-    can_pack.ID = 0;
-    printf("r high 0x%x, low: 0x%x\r\n", high, low);
+    /* printf("r high 0x%x, low: 0x%x\r\n", high, low); */
 
     can_pack.len = MCP_read(buffer_adress + 5);
     for (uint8_t i = 0; i < can_pack.len; i++){

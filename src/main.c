@@ -92,18 +92,25 @@ int main(void) {
     while (1) {
         /* test_11_bit(); */
 
-        canPack_t can_pack = {30, 3, "hei"};
-        CAN_send(0, &can_pack);
+        canPack_t can_pack1 = {1, 6, "halla"};
+        CAN_send(0, &can_pack1);
         canPack_t returned = CAN_revice(0);
         printf("-----------------------\r\n");
         /* printf("send_id 0x%x\r\n", can_pack.ID); */
         /* printf("returnd_id 0x%x\r\n", returned.ID); */
-        printf("sending: %c%c%c\r\n", can_pack.data[0], can_pack.data[1], can_pack.data[2]);
-        printf("retunred: %c%c%c\r\n", returned.data[0], returned.data[1], returned.data[2]);
-        /* printf("send:\r\n"); */
-        /* printf("ID: 0x%x, len: 0x%x, data1, data2, data3: 0x%x 0x%x 0x%x\r\n", can_pack.ID, can_pack.len, can_pack.data[0], can_pack.data[1],can_pack.data[2]); */
-        /* printf("revice\r\n"); */
-        /* printf("ID: 0x%x, len: 0x%x, data1, data2, data3: 0x%x 0x%x 0x%x\r\n", returned.ID, returned.len, returned.data[0], returned.data[1],returned.data[2]); */
+        /* printf("sending: %c%c%c\r\n", can_pack.data[0], can_pack.data[1], can_pack.data[2]); */
+        /* printf("retunred: %c%c%c\r\n", returned.data[0], returned.data[1], returned.data[2]); */
+        printf("ID: 0x%x\r\n", returned.ID);
+        printf("len: 0x%x\r\n", returned.len);
+        printf("Message: %c%c%c%c%c%c \r\n", returned.data[0], returned.data[1], returned.data[2], returned.data[3], returned.data[4], returned.data[5]);
+        _delay_ms(50);
+
+        CAN_send(0, &can_pack1);
+        canPack_t returned2 = CAN_revice(0);
+        printf("-----------------------\r\n");
+        printf("ID: 0x%x\r\n", returned2.ID);
+        printf("len: 0x%x\r\n", returned2.len);
+        printf("Message: %c%c%c \r\n", returned2.data[0], returned2.data[1], returned2.data[2]);
 
         
         /* _delay_ms(500);  */
