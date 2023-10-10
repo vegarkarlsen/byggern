@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include "CAN_controller.h"
 /* #include "include/fonts.h" */
 
 #define FOSC 4915200 // Clock Speed
@@ -48,6 +49,25 @@ int menu_level = 0;
 /**/
 /* } */
 
+void test_buffer_choice(uint8_t buffer){
+    if (buffer > 2){
+        buffer = 0;
+    }
+    uint8_t buffer_adress = 0x80;
+    buffer_adress |= (1 << buffer);
+    printf("buffer: %2d adress: 0x%X\r\n", buffer, buffer_adress);
+}
+
+void test_11_bit(){
+    uint8_t high = 0x11;
+    uint8_t low = 0x2;
+    uint16_t data = (high << 3) | low;
+    printf("high: %x, low: %x, data: %2d \r\n", high, low, data);
+
+}
+
+
+
 int main(void) {
     USART0_init(MYUBRR);
     /* SRAM_init(); // this is genreal for databus  */
@@ -57,7 +77,8 @@ int main(void) {
     // need to define printf here to use it in other functions
     fdevopen(USART0_transmit, USART0_receive);
 
-    MCP_init();
+    /* MCP_init(); */
+    CAN_init();
 
     /* calibrate_zero_point(10); */
 
@@ -67,13 +88,28 @@ int main(void) {
     /* home_screen_print(); */
 
     /* SPI_master_init(); */
-    uint8_t data;
+    /* uint8_t data; */
     while (1) {
+        /* test_11_bit(); */
 
+        canPack_t can_pack = {30, 3, "hei"};
+        CAN_send(0, &can_pack);
+        canPack_t returned = CAN_revice(0);
+        printf("-----------------------\r\n");
+        /* printf("send_id 0x%x\r\n", can_pack.ID); */
+        /* printf("returnd_id 0x%x\r\n", returned.ID); */
+        printf("sending: %c%c%c\r\n", can_pack.data[0], can_pack.data[1], can_pack.data[2]);
+        printf("retunred: %c%c%c\r\n", returned.data[0], returned.data[1], returned.data[2]);
+        /* printf("send:\r\n"); */
+        /* printf("ID: 0x%x, len: 0x%x, data1, data2, data3: 0x%x 0x%x 0x%x\r\n", can_pack.ID, can_pack.len, can_pack.data[0], can_pack.data[1],can_pack.data[2]); */
+        /* printf("revice\r\n"); */
+        /* printf("ID: 0x%x, len: 0x%x, data1, data2, data3: 0x%x 0x%x 0x%x\r\n", returned.ID, returned.len, returned.data[0], returned.data[1],returned.data[2]); */
+
+        
         /* _delay_ms(500);  */
-        MCP_write(0x41, 0xA7);
-        data = MCP_read(0x41);
-        printf("data= 0x%x\n\r", data);
+        /* MCP_write(0x41, 0xA7); */
+        /* data = MCP_read(0x41); */
+        /* printf("data= 0x%x\n\r", data); */
         /* SPI_transmit(0x69); */
 
         /* joy_x = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 3); */

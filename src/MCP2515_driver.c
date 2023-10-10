@@ -38,8 +38,17 @@ void MCP_modify_bit(uint8_t adress, uint8_t mask, uint8_t byte) {
 }
 
 void MCP_request_to_send(uint8_t buffer) {
+    // if try to choose invalid buffer, choose buffer 0 
+    // see MCP_RTX_* for which buffers is availible
+    if (buffer > 2){
+        buffer = 0;
+    }
+
+    uint8_t buffer_adress = 0x80;
+    buffer_adress |= (1 << buffer);
+
     SPI_reset_ss();
-    SPI_transmit(buffer); // see MCP_RTX_* for which buffers is availible
+    SPI_transmit(buffer_adress);
     SPI_reset_ss();
 }
 
@@ -55,6 +64,5 @@ void MCP_init() {
     SPI_master_init();
     MCP_reset();
 
-    _delay_ms(50);
-    MCP_modify_bit(MCP_CANCTRL, 0xE0, MODE_LOOPBACK);
+    _delay_ms(10);
 }
