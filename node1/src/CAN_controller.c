@@ -6,8 +6,7 @@
 
 void CAN_init() {
     MCP_init();
-    // loopback mode for testing
-    MCP_modify_bit(MCP_CANCTRL, 0xE0, MODE_LOOPBACK);
+    MCP_modify_bit(MCP_CANCTRL, 0xE0, MODE_NORMAL);
 }
 
 uint8_t get_send_buffer_adress(uint8_t buffer){

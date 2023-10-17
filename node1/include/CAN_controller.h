@@ -28,7 +28,7 @@
 typedef struct CanPack {
     uint16_t ID;
     uint8_t len;
-    uint8_t data[8];
+    char data[8];
 } canPack_t, *canPack_ptr;
 
 uint8_t get_send_buffer_adress(uint8_t buffer);
