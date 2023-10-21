@@ -11,7 +11,7 @@ void CAN_init() {
     /* from node2: */
     /* CAN_BR_BRP(41) | CAN_BR_SJW(1) | CAN_BR_PROPAG(2) | CAN_BR_PHASE1(7) |
      * CAN_BR_PHASE2(6); */
-    uint8_t BRP = 4;
+    uint8_t BRP = 3;
     uint8_t BLTMODE = 1;
     uint8_t SJW = 1;
     uint8_t PROPAG = 2;

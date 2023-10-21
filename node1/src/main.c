@@ -7,6 +7,7 @@
 #include "SPI_driver.h"
 #include "SRAM_test.h"
 #include "USART_driver.h"
+#include "JOYSTICK.h"
 #include "mcp2515.h"
 #include "util.h"
 #include <avr/interrupt.h>
@@ -22,8 +23,8 @@
 #define MYUBRR FOSC / 16 / BAUD - 1
 #define F_CPU 16000000
 
-/* int8_t joy_x; */
-/* int8_t joy_y; */
+int8_t joy_x; 
+int8_t joy_y; 
 /* uint8_t slider_left; */
 /* uint8_t slider_right; */
 /**/
@@ -67,9 +68,9 @@ void test_11_bit() {
 
 int main(void) {
     USART0_init(MYUBRR);
-    /* SRAM_init(); // this is genreal for databus  */
-    /* ADC_timer_init(); */
-    /* OLED_init(); */
+    SRAM_init(); // this is genreal for databus
+    ADC_timer_init();
+    OLED_init();
     // need to define printf here to use it in other functions
     fdevopen(USART0_transmit, USART0_receive);
 
@@ -79,7 +80,7 @@ int main(void) {
     /* MCP_init_loopBack(); */
     CAN_init();
 
-    /* calibrate_zero_point(10); */
+    calibrate_zero_point(10);
 
     // OLED_clear_screen();
     // OLED_go_line(0);
@@ -94,13 +95,8 @@ int main(void) {
     /* }; */
     canPack_t message;
     while (1) {
-        message.ID = 5;
-        message.len = 2;
-        message.data[0] = 17;
-        message.data[1] = 57;
-
-        CAN_send(0, &message);
-        CAN_print(message);
+        _delay_ms(100);
+        send_JOYSTICK_to_CAN(joy_x, joy_y, message);
 
         /* message = CAN_revice(0); */
         /* printf("ID: %d\r\nlen %d\r\ndata: %c%c\r\n", message.ID, message.len,
