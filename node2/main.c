@@ -37,12 +37,17 @@ int main() {
     printf("Setup complete\n\r");
 
     turn_on_inboard_led();
-    CAN_MESSAGE can_pack = {1,2, {5,10}};
+    CAN_MESSAGE can_pack;
 
     while (1) {
-        can_send(&can_pack, 0);
+        /* can_send(&can_pack, 0); */
         /* uint8_t status = can_receive(&can_pack, 0); */
-
-        can_print(&can_pack);
+        /* can_print(&can_pack); */
+        // joystick values
+        uint8_t status = can_receive(&can_pack, 0);
+        int8_t x = can_pack.data[0];
+        int8_t y = can_pack.data[1];
+        printf("(x,y): (%d, %d)\n\r", x,y);
+        
     }
 }
