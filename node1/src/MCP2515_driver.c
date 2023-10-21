@@ -80,28 +80,18 @@ uint8_t MCP_read_status() {
     SPI_set_ss();
     return byte;
 }
+void MCP_init_loopBack() {
 
-void MCP_init() {
     SPI_master_init();
     MCP_reset();
 
     _delay_ms(10);
 
-    // configuring baud rate:
-    /* from node2: */
-    /* CAN_BR_BRP(41) | CAN_BR_SJW(1) | CAN_BR_PROPAG(2) | CAN_BR_PHASE1(7) |
-     * CAN_BR_PHASE2(6); */
-    uint8_t BRP = 4;
-    uint8_t BLTMODE = 1;
-    uint8_t SJW = 1;
-    uint8_t PROPAG = 2;
-    uint8_t PS1 = 7;
-    uint8_t PS2 = 6;
+    MCP_modify_bit(MCP_CANCTRL, 0xE0, MODE_LOOPBACK);
+}
+void MCP_init() {
+    SPI_master_init();
+    MCP_reset();
 
-    // CNF1 bit 7-6: SJW, bit 5-0: BPR
-    MCP_write(MCP_CNF1, (SJW << 6) | (BRP));
-    // CNF2 bit7: BLTMODE, bit6: SAM, bit5-3: PHSEG1, bit2-0: PRSEG
-    MCP_write(MCP_CNF2, (BLTMODE << 7) | (PS1 << 3) | (PROPAG));
-    // CNF3 => bit7: SOF, bit6 WAKFIL, bit5-3: 0, bit2-0: PS2
-    MCP_write(MCP_CNF3, PS2);
+    _delay_ms(10);
 }

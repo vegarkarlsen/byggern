@@ -74,8 +74,9 @@ int main(void) {
     fdevopen(USART0_transmit, USART0_receive);
 
     /* MCP_init(); */
-
     /* MCP_modify_bit(MCP_CANCTRL, 0xE0, MODE_LOOPBACK); */
+
+    /* MCP_init_loopBack(); */
     CAN_init();
 
     /* calibrate_zero_point(10); */
@@ -93,10 +94,16 @@ int main(void) {
     /* }; */
     canPack_t message;
     while (1) {
-        message = CAN_revice(0);
-        printf("ID: %d\r\nlen %d\r\ndata: %c%c\r\n", message.ID, message.len, message.data[0],message.data[1]);
+        message.ID = 5;
+        message.len = 2;
+        message.data[0] = 17;
+        message.data[1] = 57;
 
-        
+        CAN_send(0, &message);
+        CAN_print(message);
 
+        /* message = CAN_revice(0); */
+        /* printf("ID: %d\r\nlen %d\r\ndata: %c%c\r\n", message.ID, message.len,
+         * message.data[0],message.data[1]); */
     }
 }
