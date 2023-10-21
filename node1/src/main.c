@@ -101,9 +101,9 @@ int main(void) {
         /* message = CAN_revice(0); */
         /* printf("ID: %d\r\nlen %d\r\ndata: %c%c\r\n", message.ID, message.len,
          * message.data[0],message.data[1]); */
-        message.ID = 5;
-        message.len = 2;
-        message.data[0] = 17;
-        message.data[1] = 57;
+        /* message.ID = 5; */
+        /* message.len = 2; */
+        /* message.data[0] = 17; */
+        /* message.data[1] = 57; */
     }
 }

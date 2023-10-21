@@ -37,16 +37,12 @@ int main() {
     printf("Setup complete\n\r");
 
     turn_on_inboard_led();
-    CAN_MESSAGE can_pack;
+    CAN_MESSAGE can_pack = {1,2, {5,10}};
 
     while (1) {
-        /* can_send(&can_pack, 0); */
-        uint8_t status = can_receive(&can_pack, 0);
-        /* printf("id %d\n\r", can_pack.id); */
-        /* int8_t x = can_pack.data[0]; */
-        /* printf("%d\n\r", x); */
+        can_send(&can_pack, 0);
+        /* uint8_t status = can_receive(&can_pack, 0); */
 
         can_print(&can_pack);
-        /* printf("ID: %d\r\nlen %d\r\ndata: %c\r\n", can_pack.id, can_pack.data_length, can_pack.data[0]); */
     }
 }
