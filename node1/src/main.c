@@ -1,13 +1,13 @@
 
 #include "ADC_driver.h"
 #include "CAN_controller.h"
+#include "JOYSTICK.h"
 #include "MCP2515_driver.h"
 #include "OLED_driver.h"
 #include "OLED_menu.h"
 #include "SPI_driver.h"
 #include "SRAM_test.h"
 #include "USART_driver.h"
-#include "JOYSTICK.h"
 #include "mcp2515.h"
 #include "util.h"
 #include <avr/interrupt.h>
@@ -23,8 +23,8 @@
 #define MYUBRR FOSC / 16 / BAUD - 1
 #define F_CPU 16000000
 
-int8_t joy_x; 
-int8_t joy_y; 
+int8_t joy_x;
+int8_t joy_y;
 /* uint8_t slider_left; */
 /* uint8_t slider_right; */
 /**/
@@ -101,5 +101,9 @@ int main(void) {
         /* message = CAN_revice(0); */
         /* printf("ID: %d\r\nlen %d\r\ndata: %c%c\r\n", message.ID, message.len,
          * message.data[0],message.data[1]); */
+        message.ID = 5;
+        message.len = 2;
+        message.data[0] = 17;
+        message.data[1] = 57;
     }
 }

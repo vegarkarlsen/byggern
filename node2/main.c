@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
+/* #include <util/delay.h> */
 
 #include "can_controller.h"
 #include "sam.h"
@@ -24,26 +25,6 @@ void turn_on_inboard_led() {
     PIOA->PIO_ODSR |= (PIO_PA20);
 }
 
-void init_can() {
-    // Set baudrate, Phase1, phase2 and propagation delay for can bus. Must
-    // match on all nodes!
-    uint32_t can_br = CAN_BR_BRP(41) | CAN_BR_SJW(1) | CAN_BR_PROPAG(2) | CAN_BR_PHASE1(7) | CAN_BR_PHASE2(6);
-    uint8_t init_status = can_init_def_tx_rx_mb(can_br);
-    if (init_status) {
-        printf("init failed, can_status: 0x%2x", init_status);
-    } else {
-        printf("Can initialized.");
-    }
-}
-void can_print(CAN_MESSAGE *m){
-    printf("\n\r--------------------------\n\r");
-    printf("ID: %d\n\r", m->id);
-    printf("Len: %d\n\r", m->data_length);
-    printf("Data: ");
-    for (int i = 0; i < m->data_length; i++){
-        printf("%d ", m->data[i]);
-    }
-}
 int main() {
     SystemInit();
 
@@ -60,8 +41,11 @@ int main() {
 
     while (1) {
         /* can_send(&can_pack, 0); */
-
         uint8_t status = can_receive(&can_pack, 0);
+        /* printf("id %d\n\r", can_pack.id); */
+        /* int8_t x = can_pack.data[0]; */
+        /* printf("%d\n\r", x); */
+
         can_print(&can_pack);
         /* printf("ID: %d\r\nlen %d\r\ndata: %c\r\n", can_pack.id, can_pack.data_length, can_pack.data[0]); */
     }

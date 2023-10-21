@@ -45,7 +45,7 @@ uint8_t get_send_buffer_adress(uint8_t buffer) {
     }
 }
 
-void CAN_send(uint8_t buffer, canPack_t *can_pack) {
+void CAN_send(canPack_t *can_pack, uint8_t buffer) {
     uint8_t buffer_adress = get_send_buffer_adress(buffer);
 
     // ID
@@ -79,35 +79,32 @@ uint8_t get_recive_buffer_adress(uint8_t buffer) {
     }
 }
 
-canPack_t CAN_revice(uint8_t buffer) {
+uint8_t CAN_revice(canPack_t *can_pack, uint8_t buffer) {
     uint8_t buffer_adress = get_recive_buffer_adress(buffer);
 
     uint8_t high = MCP_read(buffer_adress + 1);
     uint8_t low = MCP_read(buffer_adress + 2);
-    canPack_t can_pack;
-    can_pack.ID = (high << 3) | (low >> 5);
+    /* canPack_t can_pack; */
+    can_pack->ID = (high << 3) | (low >> 5);
     /* can_pack.ID = (high >> 3) | low; */
     /* printf("r high 0x%x, low: 0x%x\r\n", high, low); */
 
-    can_pack.len = MCP_read(buffer_adress + 5);
-    for (uint8_t i = 0; i < can_pack.len; i++) {
-        can_pack.data[i] = MCP_read(buffer_adress + 6 + i);
+    can_pack->len = MCP_read(buffer_adress + 5);
+    for (uint8_t i = 0; i < can_pack->len; i++) {
+        can_pack->data[i] = MCP_read(buffer_adress + 6 + i);
     }
 
-    return can_pack;
+    return 1;
 }
 
-void CAN_print(canPack_t message) {
+void CAN_print(canPack_t *message) {
 
     printf("---------------------------------\r\n");
-    printf("ID: %d\r\n", message.ID);
-    printf("lenght: %d\r\n", message.len);
-
-    uint8_t length = message.len;
-    if (length > 8) {
-        length = 8;
+    printf("ID: %d\r\n", message->ID);
+    printf("lenght: %d\r\n", message->len);
+    printf("Data: ");
+    for (int i = 0; i < message->len; i++) {
+        printf("%d ", message->data[i]);
     }
-    for (int i = 0; i < length; i++) {
-        printf("data[%d]: %d\r\n", i, message.data[i]);
-    }
+    printf("\r\n");
 }

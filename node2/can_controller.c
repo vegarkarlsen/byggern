@@ -207,3 +207,25 @@ uint8_t can_receive(CAN_MESSAGE *can_msg, uint8_t rx_mb_id) {
     }
 }
 
+void init_can() {
+    // Set baudrate, Phase1, phase2 and propagation delay for can bus. Must
+    // match on all nodes!
+    uint32_t can_br = CAN_BR_BRP(41) | CAN_BR_SJW(1) | CAN_BR_PROPAG(2) | CAN_BR_PHASE1(7) | CAN_BR_PHASE2(6);
+    uint8_t init_status = can_init_def_tx_rx_mb(can_br);
+    if (init_status) {
+        printf("init failed, can_status: 0x%2x", init_status);
+    } else {
+        printf("Can initialized.");
+    }
+}
+
+void can_print(CAN_MESSAGE *m){
+    printf("--------------------------\n\r");
+    printf("ID: %d\n\r", m->id);
+    printf("Len: %d\n\r", m->data_length);
+    printf("Data: ");
+    for (int i = 0; i < m->data_length; i++){
+        printf("%d ", m->data[i]);
+    }
+    printf("\n\r");
+}

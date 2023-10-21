@@ -24,10 +24,11 @@ typedef struct CanPack {
 uint8_t get_send_buffer_adress(uint8_t buffer);
 uint8_t get_recive_buffer_adress(uint8_t buffer);
 
+// initalize MCP, and set baud rate on CAN comm
 void CAN_init();
 
-void CAN_send(uint8_t buffer, canPack_t *can_pack);
+void CAN_send(canPack_t *can_pack, uint8_t buffer);
 
-canPack_t CAN_revice(uint8_t buffer);
+uint8_t CAN_revice(canPack_t *can_pack, uint8_t buffer);
 
-void CAN_print(canPack_t message);
+void CAN_print(canPack_t *message);
