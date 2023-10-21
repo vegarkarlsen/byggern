@@ -206,3 +206,4 @@ uint8_t can_receive(CAN_MESSAGE *can_msg, uint8_t rx_mb_id) {
         return 1;
     }
 }
+
