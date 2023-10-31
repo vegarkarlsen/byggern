@@ -12,7 +12,7 @@
 #include "sam.h"
 #include "timer.h"
 
-// #include "can_interrupt.h"
+#include "can_interrupt.h"
 
 void turn_on_inboard_led() {
     // enbale IO
@@ -31,7 +31,6 @@ void turn_on_inboard_led() {
     PIOA->PIO_ODSR |= (PIO_PA20);
 }
 
-
 int main() {
     SystemInit();
 
@@ -47,7 +46,6 @@ int main() {
     printf("Setup complete\n\r");
 
     turn_on_inboard_led();
-
 
     while (1) {
 
