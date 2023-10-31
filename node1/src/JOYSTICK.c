@@ -10,5 +10,5 @@ void send_JOYSTICK_to_CAN(uint8_t x, uint8_t y, canPack_t message) {
     message.data[0] = x;
     message.data[1] = y;
     CAN_print(&message);
-    CAN_send(&message, 0);
+    CAN_send(&message, 1);
 }

@@ -5,12 +5,14 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <stdio.h>
-/* #include <util/delay.h> */
+#include <wchar.h>
 
-#include "sam.h"
 #include "can_controller.h"
 #include "pwm_lib.h"
+#include "sam.h"
 #include "timer.h"
+
+// #include "can_interrupt.h"
 
 void turn_on_inboard_led() {
     // enbale IO
@@ -29,17 +31,6 @@ void turn_on_inboard_led() {
     PIOA->PIO_ODSR |= (PIO_PA20);
 }
 
-void joy_test(int x){
-    uint8_t pros;
-    if (x < 0){
-        pros = x * -1;
-    }
-    else {
-        pros = x;
-    }
-    set_pwn_duty_cycle(pros);
-
-}
 
 int main() {
     SystemInit();
@@ -50,29 +41,27 @@ int main() {
 
     init_can();
     pwm_init();
-    
-    SysTick_Config(10500);
 
+    SysTick_Config(10500);
 
     printf("Setup complete\n\r");
 
     turn_on_inboard_led();
-    CAN_MESSAGE can_pack;
+
 
     while (1) {
-        /* can_send(&can_pack, 0); */
-        /* uint8_t status = can_receive(&can_pack, 0); */
-        /* can_print(&can_pack); */
+
+        // can_send(&can_pack, 0);
+        // uint8_t status = can_receive(&can_pack, 0);
+        // can_print(&can_pack);
         // joystick values
-        uint8_t status = can_receive(&can_pack, 0);
-        int8_t x = can_pack.data[0];
-        int8_t y = can_pack.data[1];
-        printf("(x,y): (%d, %d)\n\r", x,y);
+        // int8_t x = can_pack.data[0];
+        // int8_t y = can_pack.data[1];
+        // printf("(x,y): (%d, %d)\n\r", x, y);
 
         /* set_pwn_duty_cycle(100); */
-        joy_test(y);
+        // joy_test(y);
 
         /* printf("%d\n\r", getTimeMs()); */
- 
     }
 }

@@ -12,3 +12,5 @@
 void pwm_init();
 
 void set_pwn_duty_cycle(uint8_t prosentage);
+
+void joy_test(int x);

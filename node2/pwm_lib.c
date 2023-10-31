@@ -57,7 +57,7 @@ void pwm_init(){
 
 void set_pwn_duty_cycle(uint8_t prosentage){
     if (prosentage > 100){
-        prosentage = 0;
+        prosentage = 100;
     }
 
     uint16_t cdty_max = 1378;
@@ -68,4 +68,14 @@ void set_pwn_duty_cycle(uint8_t prosentage){
     PWM->PWM_CH_NUM[6].PWM_CDTYUPD = PWM_CDTY_CDTY(cdty); 
     // trigger duty cyle update on nex periode
     PWM->PWM_SCUC = PWM_SCUC_UPDULOCK;
+}
+
+void joy_test(int x) {
+    uint8_t pros;
+    if (x < 0) {
+        pros = x * -1;
+    } else {
+        pros = x;
+    }
+    set_pwn_duty_cycle(pros);
 }

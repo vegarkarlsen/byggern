@@ -13,6 +13,9 @@
 
 #include <stdint.h>
 
+// debugging
+#define CAN_DEBUG 1
+
 typedef struct can_message_t {
     uint16_t id;
     char data_length;

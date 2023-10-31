@@ -14,6 +14,8 @@
 
 #include "../uart_and_printf/printf-stdarg.h"
 
+#define CAN_DEBUG 1
+
 /**
  * \brief Initialize can bus with predefined number of rx and tx mailboxes,
  * CAN0->CAN_MB[0] is used for transmitting
@@ -72,10 +74,8 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb) {
     PIOA->PIO_PUER = (PIO_PA1A_CANRX0 | PIO_PA0A_CANTX0);
 
     // Enable Clock for CAN0 in PMC
-    PMC->PMC_PCR =
-        PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD |
-        (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1
-                                      // (write), PID = 2B (CAN0)
+    PMC->PMC_PCR = PMC_PCR_EN | (0 << PMC_PCR_DIV_Pos) | PMC_PCR_CMD | (ID_CAN0 << PMC_PCR_PID_Pos); // DIV = 1(can clk = MCK/2), CMD = 1
+    // (write), PID = 2B (CAN0)
     PMC->PMC_PCER1 |= 1 << (ID_CAN0 - 32);
 
     // Set baudrate, Phase1, phase2 and propagation delay for can bus. Must
@@ -87,8 +87,8 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb) {
     uint32_t can_ier = 0;
 
     /* Configure receive mailboxes */
-    for (int n = num_tx_mb; n <= num_rx_mb + num_tx_mb;
-         n++) // Simply one mailbox setup for all messages. You might want to
+    if(CAN_DEBUG) { printf("revice malbox"); }
+    for (int n = num_tx_mb; n <= num_rx_mb + num_tx_mb; n++) // Simply one mailbox setup for all messages. You might want to
               // apply filter for them.
     {
         CAN0->CAN_MB[n].CAN_MAM = 0; // Accept all messages
@@ -97,13 +97,19 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb) {
         CAN0->CAN_MB[n].CAN_MCR |= CAN_MCR_MTCR;
 
         can_ier |= 1 << n; // Enable interrupt on rx mailbox
+        if (CAN_DEBUG) { printf(" %d", n);}
     }
+    
+    if (CAN_DEBUG) { printf("\n\r"); }
 
     /*Configure transmit mailboxes */
+    if (CAN_DEBUG) { printf("transmitt malbox"); }
     for (int n = 0; n < num_tx_mb; n++) {
         CAN0->CAN_MB[n].CAN_MID = CAN_MID_MIDE;
         CAN0->CAN_MB[n].CAN_MMR = (CAN_MMR_MOT_MB_TX);
+        if (CAN_DEBUG) { printf(" %d", n); }
     }
+    if (CAN_DEBUG) { printf("transmitt malbox"); }
 
     /****** End of mailbox configuraion ******/
 
@@ -178,13 +184,10 @@ uint8_t can_receive(CAN_MESSAGE *can_msg, uint8_t rx_mb_id) {
 
         // Get message ID
         can_msg->id =
-            (uint16_t)((CAN0->CAN_MB[rx_mb_id].CAN_MID & CAN_MID_MIDvA_Msk) >>
-                       CAN_MID_MIDvA_Pos);
+            (uint16_t)((CAN0->CAN_MB[rx_mb_id].CAN_MID & CAN_MID_MIDvA_Msk) >> CAN_MID_MIDvA_Pos);
 
         // Get data length
-        can_msg->data_length =
-            (uint8_t)((CAN0->CAN_MB[rx_mb_id].CAN_MSR & CAN_MSR_MDLC_Msk) >>
-                      CAN_MSR_MDLC_Pos);
+        can_msg->data_length = (uint8_t)((CAN0->CAN_MB[rx_mb_id].CAN_MSR & CAN_MSR_MDLC_Msk) >> CAN_MSR_MDLC_Pos);
 
         // Put data in CAN_MESSAGE object
         for (int i = 0; i < can_msg->data_length; i++) {
