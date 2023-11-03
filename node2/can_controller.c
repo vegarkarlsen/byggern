@@ -216,9 +216,9 @@ void init_can() {
     uint32_t can_br = CAN_BR_BRP(41) | CAN_BR_SJW(1) | CAN_BR_PROPAG(2) | CAN_BR_PHASE1(7) | CAN_BR_PHASE2(6);
     uint8_t init_status = can_init_def_tx_rx_mb(can_br);
     if (init_status) {
-        printf("init failed, can_status: 0x%2x", init_status);
+        printf("init failed, can_status: 0x%2x\n\r", init_status);
     } else {
-        printf("Can initialized.");
+        printf("Can initialized.\n\r");
     }
 }
 
