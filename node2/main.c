@@ -12,7 +12,7 @@
 #include "sam.h"
 #include "timer.h"
 
-#include "can_interrupt.h"
+// #include "can_interrupt.h"
 
 void turn_on_inboard_led() {
     // enbale IO
@@ -45,20 +45,22 @@ int main() {
 
     printf("Setup complete\n\r");
 
-    turn_on_inboard_led();
+    // turn_on_inboard_led();
 
+    CAN_MESSAGE can_pack;
     while (1) {
 
         // can_send(&can_pack, 0);
-        // uint8_t status = can_receive(&can_pack, 0);
+        uint8_t status = can_receive(&can_pack,00);
+
         // can_print(&can_pack);
         // joystick values
-        // int8_t x = can_pack.data[0];
-        // int8_t y = can_pack.data[1];
-        // printf("(x,y): (%d, %d)\n\r", x, y);
-
-        /* set_pwn_duty_cycle(100); */
-        // joy_test(y);
+        if (can_pack.id == 7){
+            int8_t x = can_pack.data[0];
+            int8_t y = can_pack.data[1];
+            printf("(x,y): (%d, %d)\n\r", x, y);
+            joy_test(y);
+        }
 
         /* printf("%d\n\r", getTimeMs()); */
     }
