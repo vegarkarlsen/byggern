@@ -57,7 +57,7 @@ int main() {
     while (1) {
         // joy_test(50, 6);
         printf("ADC: %d\n\r", read_ir_raw());
-        goals = detect_goal(goals);
+        detect_goal(&goals);
         printf("Goals: %d\n\r", goals);
 
         // can_send(&can_pack, 0);

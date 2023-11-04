@@ -31,19 +31,22 @@ uint16_t read_ir_raw(){
     return ADC->ADC_CDR[0]; 
 }
 
-uint16_t detect_goal(uint8_t goals){
+void detect_goal(uint8_t *goals){
     uint16_t raw_signal = read_ir_raw();
     if (raw_signal<LOWER_THRESHOLD){
         detected_goal = 1;
-        return goals;
+        return;
+        //return goals;
     }
     else if (raw_signal>UPPER_THRESHOLD && detected_goal){
         detected_goal = 0;
-        uint16_t new_goals = goals + 1;
-        return new_goals;
+        *goals = *goals + 1;
+        //return new_goals;
+        return;
     }
     else {
-        return goals;
+        //return goals;
+        return;
     }
 }
 

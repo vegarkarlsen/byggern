@@ -19,5 +19,5 @@ void ir_init();
 
 uint16_t read_ir_raw();
 
-uint16_t detect_goal(uint8_t goals);
+void detect_goal(uint8_t *goals);
 
