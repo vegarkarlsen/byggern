@@ -11,10 +11,13 @@
 
 
 // Initialize motorbox confgiureations
-void moto_init();
+void motor_init();
 
 // move the motor
-void move_motor();
+void move_motor(uint16_t value);
+
+// write to dac
+void dac_write(uint16_t bin_voltage);
 
 // Read value from the motorbox's encoder
 uint16_t read_encoder();

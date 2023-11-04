@@ -56,9 +56,11 @@ int main() {
     // CAN_MESSAGE can_pack;
     while (1) {
         // joy_test(50, 6);
-        printf("ADC: %d\n\r", read_ir_raw());
-        detect_goal(&goals);
-        printf("Goals: %d\n\r", goals);
+        // printf("ADC: %d\n\r", read_ir_raw());
+        // detect_goal(&goals);
+        // printf("Goals: %d\n\r", goals);
+
+
 
         // can_send(&can_pack, 0);
         // uint8_t status = can_receive(&can_pack,00);

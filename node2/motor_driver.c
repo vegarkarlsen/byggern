@@ -1,5 +1,7 @@
 
 #include "motor_driver.h"
+#include "component/component_dacc.h"
+#include "component/component_pio.h"
 #include "pio/pio_sam3x8e.h"
 #include "sam3x8e.h"
 #include "timer.h"
@@ -24,13 +26,34 @@
  * !OE - PD0
 */
 
-void moto_init(){
-    // enable MJ2 pins
-    PIOC->PIO_PER |= PIO_PC1 | PIO_PA2 | PIO_PA3 | PIO_PA4 | PIO_PA5;
+void motor_init(){
+    /* MJ1: (all output)*/
     // enable MJ1 pins
     PIOD->PIO_PER |= PIO_PD0 | PIO_PD1 | PIO_PD2 | PIO_PD9 | PIO_PD10;
+    // set pins as output
+    PIOD->PIO_OER |= PIO_PD0 | PIO_PD1 | PIO_PD2 | PIO_PD9 | PIO_PD10;
+    // Enable internal pullup for inverted pins:
+    PIOD->PIO_PUER |= PIO_PD0 | PIO_PD1;
+    // Disable internal pullup for normal pins
+    PIOD->PIO_PUDR |= PIO_PD2 | PIO_PD9 | PIO_PD10;
+    // Ouput write enable on all pins
+    PIOD->PIO_OWER |= PIO_PD0 | PIO_PD1 | PIO_PD2 | PIO_PD9 | PIO_PD10;
 
-    
+    /* MJ2: (All input)*/
+    // enable MJ2 pins
+    PIOC->PIO_PER |= PIO_PC1 | PIO_PC2 | PIO_PC3 | PIO_PC4 | PIO_PC5;
+    // set pins as input (Disable output)
+    PIOC->PIO_ODR |= PIO_PC1 | PIO_PC2 | PIO_PC3 | PIO_PC4 | PIO_PC5;
+    // Disable internal pullup
+    PIOC->PIO_PUDR |= PIO_PC1 | PIO_PC2 | PIO_PC3 | PIO_PC4 | PIO_PC5;    
+
+    /* DAC: */
+    // Dissable write protection
+    DACC->DACC_WPMR &= ~DACC_WPMR_WPEN;
+    // configure mode (free running mode, and using full word)
+    DACC->DACC_MR |= DACC_MR_TRGEN_DIS | DACC_MR_WORD_HALF;
+    // Eanble DACC channel 1 = DAC1?
+    DACC->DACC_CHER |= DACC_CHER_CH1;
 }
 
 
@@ -70,3 +93,22 @@ uint16_t read_encoder(){
     return full_byte;
 }
 
+void dac_write(uint16_t bin_voltage){
+    // write value to DAC 12bit
+    DACC->DACC_CDR = bin_voltage; 
+}
+
+
+// TODO: finish this
+void move_motor(uint16_t value, uint8_t direction){
+    // setting EN low 
+    PIOD->PIO_ODSR |= PIO_PD9;
+    // choose direction 
+    if (direction){
+        PIOD->PIO_ODSR |= PIO_PD10;
+    }
+    else {
+        PIOD->PIO_ODSR &= ~PIO_PD10;
+    }
+
+}
