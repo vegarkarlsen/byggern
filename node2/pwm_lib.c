@@ -11,9 +11,9 @@
 
 void pwm_init() {
 
-    // enable PWM in PMC?
+    // enable PWM clock
     PMC->PMC_PCER1 |= PMC_PCER1_PID36;
-    // disable PIOC18  TODO: swapp to P19?
+    // disable PIOC18
     PIOC->PIO_PDR |= PIO_PDR_P18;
     // (PIO_ABSR) Select Peripheral B.
     PIOC->PIO_ABSR |= PIO_ABSR_P18;
@@ -52,7 +52,7 @@ void pwm_init() {
     }
 }
 
-void set_pwn_duty_cycle(uint8_t prosentage) {
+void set_pwn_duty_cycle(uint8_t prosentage, uint8_t channel) {
     if (prosentage > 99) {
         prosentage = 99;
     }
@@ -69,17 +69,17 @@ void set_pwn_duty_cycle(uint8_t prosentage) {
     }
 
     // update duty cyle
-    PWM->PWM_CH_NUM[6].PWM_CDTYUPD = PWM_CDTY_CDTY(cdty);
+    PWM->PWM_CH_NUM[channel].PWM_CDTYUPD = PWM_CDTY_CDTY(cdty);
     // trigger duty cyle update on nex periode
     PWM->PWM_SCUC = PWM_SCUC_UPDULOCK;
 }
 
-void joy_test(int x) {
+void joy_test(int x, uint8_t channel) {
     uint8_t pros;
     if (x < 0) {
         pros = x * -1;
     } else {
         pros = x;
     }
-    set_pwn_duty_cycle(pros);
+    set_pwn_duty_cycle(pros, channel);
 }

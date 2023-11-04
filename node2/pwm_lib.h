@@ -11,6 +11,6 @@
 
 void pwm_init();
 
-void set_pwn_duty_cycle(uint8_t prosentage);
+void set_pwn_duty_cycle(uint8_t prosentage, uint8_t channel);
 
-void joy_test(int x);
+void joy_test(int x, uint8_t channel);
