@@ -9,9 +9,15 @@
 
 #include "sam.h"
 
+#define UPPER_THRESHOLD 3200
+#define LOWER_THRESHOLD 400
+
+
+
 
 void ir_init();
 
 uint16_t read_ir_raw();
 
-uint8_t detect_goal(uint8_t treshold);
+uint16_t detect_goal(uint8_t goals);
+

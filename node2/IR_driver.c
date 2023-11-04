@@ -1,4 +1,5 @@
 #include "IR_driver.h"
+#include "timer.h"
 #include "component/component_adc.h"
 #include "component/component_pio.h"
 #include "instance/instance_adc.h"
@@ -6,7 +7,7 @@
 #include "sam3x8e.h"
 #include <stdint.h>
 
-
+uint8_t detected_goal = 0;
 // ADC configuration, page 1317
 // using CH0: This is extrafunction of PA2 (see table 9-2 page 40) PA2 in arduino is AD7 on shild.
 void ir_init(){
@@ -30,14 +31,19 @@ uint16_t read_ir_raw(){
     return ADC->ADC_CDR[0]; 
 }
 
-uint8_t detect_goal(uint8_t threshold){
+uint16_t detect_goal(uint8_t goals){
     uint16_t raw_signal = read_ir_raw();
-
-    if (raw_signal < threshold){
-        return 1;
+    if (raw_signal<LOWER_THRESHOLD){
+        detected_goal = 1;
+        return goals;
+    }
+    else if (raw_signal>UPPER_THRESHOLD && detected_goal){
+        detected_goal = 0;
+        uint16_t new_goals = goals + 1;
+        return new_goals;
     }
     else {
-        return 0;
+        return goals;
     }
 }
 

@@ -13,6 +13,9 @@
 #include "timer.h"
 #include "IR_driver.h"
 
+//GLOBAL VARIABLES
+uint8_t goals = 0;
+
 // #include "can_interrupt.h"
 
 void turn_on_inboard_led() {
@@ -54,6 +57,8 @@ int main() {
     while (1) {
         // joy_test(50, 6);
         printf("ADC: %d\n\r", read_ir_raw());
+        goals = detect_goal(goals);
+        printf("Goals: %d\n\r", goals);
 
         // can_send(&can_pack, 0);
         // uint8_t status = can_receive(&can_pack,00);
