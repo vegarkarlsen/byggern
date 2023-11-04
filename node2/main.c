@@ -11,6 +11,7 @@
 #include "pwm_lib.h"
 #include "sam.h"
 #include "timer.h"
+#include "IR_driver.h"
 
 // #include "can_interrupt.h"
 
@@ -38,29 +39,33 @@ int main() {
 
     configure_uart();
 
-    init_can();
-    pwm_init();
+    // init_can();
+    // pwm_init();
 
-    SysTick_Config(10500);
+    // SysTick_Config(10500);
+
+    ir_init();
 
     printf("Setup complete\n\r");
 
-    // turn_on_inboard_led();
+    turn_on_inboard_led();
 
-    CAN_MESSAGE can_pack;
+    // CAN_MESSAGE can_pack;
     while (1) {
+        // joy_test(50, 6);
+        printf("ADC: %d\n\r", read_ir_raw());
 
         // can_send(&can_pack, 0);
-        uint8_t status = can_receive(&can_pack,00);
-
-        // can_print(&can_pack);
-        // joystick values
-        if (can_pack.id == 7){
-            int8_t x = can_pack.data[0];
-            int8_t y = can_pack.data[1];
-            printf("(x,y): (%d, %d)\n\r", x, y);
-            joy_test(y);
-        }
+        // uint8_t status = can_receive(&can_pack,00);
+        //
+        // // can_print(&can_pack);
+        // // joystick values
+        // if (can_pack.id == 7){
+        //     int8_t x = can_pack.data[0];
+        //     int8_t y = can_pack.data[1];
+        //     printf("(x,y): (%d, %d)\n\r", x, y);
+        //     joy_test(y, 6);
+        // }
 
         /* printf("%d\n\r", getTimeMs()); */
     }
