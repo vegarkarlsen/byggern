@@ -9,12 +9,15 @@
 
 #include "sam.h"
 
-#define UPPER_THRESHOLD 3200
-#define LOWER_THRESHOLD 400
+// Initialize motorbox confgiureations
+void moto_init();
 
-void ir_init();
+// move the motor
+void move_motor();
 
-uint16_t read_ir_raw();
+// Read value from the motorbox's encoder
+uint16_t read_encoder();
 
-void detect_goal(uint8_t *goals);
+
+
 
