@@ -6,8 +6,9 @@
 #include "sam3x8e.h"
 #include "timer.h"
 #include <stdint.h>
+#include <stdio.h>
 
-
+#define MOTOR_DEBUG 1
 /*
  * MJ2 motorbox to arduino connections:
  * shild - motorbox - arduino
@@ -59,7 +60,6 @@ void motor_init(){
 }
 
 
-
 uint16_t read_encoder(){
 // 1: Set !OE low, to sample and hold the encoder value
     PIOD->PIO_ODSR &= ~(PIO_PD0); 
@@ -67,21 +67,21 @@ uint16_t read_encoder(){
     PIOD->PIO_ODSR &= ~(PIO_PD2);
 // 3: Wait approx. 20 microseconds for output to settle
     uint8_t wait_ms =  getTimeMs();
-    uint8_t start_time = wait_ms;
-    while(wait_ms<start_time+2){
+    // uint8_t start_time = wait_ms;
+    while(getTimeMs() < wait_ms+2){
         wait_ms = getTimeMs();
     }
 // 4: Read MJ2 to get high byte
 //since PD1-PD8 is in use and not PD0, push PD0 out
 //the size of PDSR function is limited to 8 bit by uint8_t
-    uint8_t high_byte = (uint8_t)(PIOC->PIO_PDSR >> 1);
+    uint8_t high_byte = (PIOC->PIO_PDSR >> 1);
 // 5: Set SEL high to output low byte
     PIOD->PIO_ODSR |= PIO_PD2;
 // 6: Wait approx. 20 microseconds
     uint8_t wait_ms_1 =  getTimeMs();
-    uint8_t start_time_1 = wait_ms_1;
-    while(wait_ms_1<start_time_1+2){
-        wait_ms_1 = getTimeMs();
+    // uint8_t start_time_1 = wait_ms_1;
+    while(getTimeMs()<wait_ms_1+2){
+        // wait_ms_1 = getTimeMs();
     }
 // 7: Read MJ2 to get low byte
 //since PD1-PD8 is in use and not PD0, push PD0 out
@@ -101,9 +101,9 @@ void reset_encoder(){
     PIOD->PIO_ODSR &= ~PIO_PD1;
     //wait 100ms
     uint8_t wait_ms =  getTimeMs();
-    uint8_t start_time = wait_ms;
-    while(wait_ms<start_time+100){
-        wait_ms = getTimeMs();
+    // uint8_t start_time = wait_ms;
+    while(getTimeMs() < wait_ms+100){
+        // wait_ms = getTimeMs();
     }
     //Set pin !RST high
     PIOD->PIO_ODSR |= PIO_PD1;
@@ -115,18 +115,44 @@ void dac_write(uint16_t bin_voltage){
     DACC->DACC_CDR = bin_voltage; 
 }
 
+void dac_write_percentage(uint8_t percent){
+    
+    // cant be bigger than 100%
+    if (percent > 100){
+        percent = 100;
+    }
 
-// TODO: finish this
-void move_motor(uint16_t value, uint8_t direction){
-    // setting EN low 
-    PIOD->PIO_ODSR |= PIO_PD9;
-    // choose direction 
-    if (direction){
-        PIOD->PIO_ODSR |= PIO_PD10;
+    uint16_t max_bin_votalge = 4095;
+    uint32_t bin_voltage = (percent * max_bin_votalge)/100;
+    if (MOTOR_DEBUG){
+        printf("[motor_driver]: Writing to dac: %d\n\r", bin_voltage);
     }
-    else {
-        PIOD->PIO_ODSR &= ~PIO_PD10;
-    }
+    dac_write(bin_voltage);
+
+}
+void stop_motor(){
     PIOD->PIO_ODSR &= ~PIO_PD9;
 
+}
+void enable_motor(){
+    // setting EN high
+    PIOD->PIO_ODSR |= PIO_PD9;
+}
+
+void move_motor(uint16_t value, uint8_t direction){
+    // write to motor, needs to enable motor before writing.
+    switch (direction) {
+        case 0:
+            // DIR = 0
+            PIOD->PIO_ODSR &= ~PIO_PD10;
+            break;
+        case 1: 
+            // DIR = 1 
+            PIOD->PIO_ODSR |= PIO_PD10;
+            break;
+        default:
+            stop_motor();
+            return;
+    }
+    dac_write_percentage(value);
 }

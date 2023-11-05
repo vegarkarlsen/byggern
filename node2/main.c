@@ -1,4 +1,5 @@
 #include "pio/pio_sam3x8e.h"
+#include "sam3x8e.h"
 #include "timer.h"
 #include "uart_and_printf/printf-stdarg.h"
 #include "uart_and_printf/uart.h"
@@ -36,6 +37,21 @@ void turn_on_inboard_led() {
     PIOA->PIO_ODSR |= (PIO_PA20);
 }
 
+void motor_test(){
+    printf("Start motor\n\r");
+    enable_motor();
+    uint32_t time_now = getTimeMs();
+    printf("waiting\n\r");
+    while (getTimeMs() < time_now + 2000){
+        uint16_t motor_pos = read_encoder();
+        printf("%d\r\n", motor_pos);
+    } 
+    move_motor(1, 1);
+    stop_motor(); 
+    printf("stopping motor\n\r");
+}
+
+
 int main() {
     SystemInit();
 
@@ -46,20 +62,30 @@ int main() {
     // init_can();
     pwm_init();
 
-    // SysTick_Config(10500);
+    SysTick_Config(10500);
 
     ir_init();
     motor_init();
 
+    turn_on_inboard_led();
+
     printf("Setup complete\n\r");
 
-    turn_on_inboard_led();
+    move_motor(25, 1);
+    motor_test();
 
     // CAN_MESSAGE can_pack;
     while (1) {
-        dac_write(2000);
-        joy_test(50, 6);
-        printf("DACC interput status register: %x\n\r", DACC->DACC_ISR);
+        // dac_write(4095);
+        // joy_test(50, 6);
+        printf("0x%x\n\r", MJ2_pins);
+
+        
+
+
+        // uint16_t test = dac_write_percentage(120);
+        
+        // printf("DACC interput status register: %x\n\r", DACC->DACC_ISR);
         // printf("ADC: %d\n\r", read_ir_raw());
         // detect_goal(&goals);
         // printf("Goals: %d\n\r", goals);
