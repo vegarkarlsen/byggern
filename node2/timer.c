@@ -6,11 +6,30 @@
 
 volatile uint32_t ticks = 0;
 
+// void sysTick_inti(){
+//     // set clock source to MCK/8
+//     SysTick->CTRL &= ~SysTick_CLKSOURCE;
+//     // Set countflag to 1 if timer has counted to 0 since last read
+//     SysTick->CTRL &= ~SysTick_TICKINT;
+//     // load max value in reload
+//     SysTick->LOAD = 0x00FFFFFF;
+//     // Enable systick
+//     SysTick->CTRL |= SysTick_ENABLE;
+// }
+
+// uint32_t get_systick(){
+//     return SysTick->VAL;
+// }
+
 void SysTick_Handler(){
     ticks++;
 }
 
-uint32_t getTimeMs(){
+uint32_t getTicks(){
     return ticks;
+}
+
+uint32_t getTimeMs(){
+    return getTicks()/10;
 }
 
