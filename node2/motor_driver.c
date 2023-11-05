@@ -186,7 +186,7 @@ uint16_t calibrate_encoder(){
     // stop_motor();
     reset_encoder();
     move_motor(50, 0);
-    _ms_delay(500);
+    _ms_delay(600);
     stop_motor();
     return read_encoder();
 }

@@ -14,14 +14,18 @@
 #include "timer.h"
 #include "IR_driver.h"
 #include "motor_driver.h"
-
-// #define DEBUG_MOTOR
-#include "log.h"
-
+#include "pid_controller.h"
 
 
 //GLOBAL VARIABLES
 uint8_t goals = 0;
+int8_t x;
+int8_t y; 
+uint8_t button_1;
+uint8_t button_2;
+uint8_t button_3;
+uint8_t slider_left;
+uint8_t slider_right;
 
 // #include "can_interrupt.h"
 
@@ -53,6 +57,15 @@ void motor_test(){
     printf("stopping motor\n\r");
 }
 
+uint8_t slider_to_persentage(uint8_t slider_val){
+    return (slider_val*100/255);
+}
+
+    // return (input - i_min) * (o_max - o_min) / (i_max - i_min) + o_min;
+uint8_t raw_pos_to_persentage(uint16_t raw_pos, uint16_t max_pos){
+    return (raw_pos * 100)/max_pos;
+}
+
 
 int main() {
     SystemInit();
@@ -61,7 +74,7 @@ int main() {
 
     configure_uart();
 
-    // init_can();
+    init_can();
     pwm_init();
 
     SysTick_Config(10500);
@@ -74,7 +87,12 @@ int main() {
     printf("Setup complete\n\r");
     uint16_t max_pos_raw = calibrate_encoder();
 
-    // CAN_MESSAGE can_pack;
+    // set PID values
+    PID_t pid = {
+        1, 1, 1, 30
+    };
+
+    CAN_MESSAGE can_pack;
     while (1) {
         // dac_write(4095);
         // joy_test(50, 6);
@@ -99,17 +117,39 @@ int main() {
 
 
         // can_send(&can_pack, 0);
-        // uint8_t status = can_receive(&can_pack,00);
-        //
-        // // can_print(&can_pack);
-        // // joystick values
+        uint8_t status = can_receive(&can_pack, 0);
+        can_print(&can_pack);
+        // joystick values
         // if (can_pack.id == 7){
-        //     int8_t x = can_pack.data[0];
-        //     int8_t y = can_pack.data[1];
-        //     printf("(x,y): (%d, %d)\n\r", x, y);
-        //     joy_test(y, 6);
+            int8_t x = can_pack.data[0];
+            int8_t y = can_pack.data[1];
+            uint8_t button_1 = can_pack.data[2];
+            uint8_t button_2 = can_pack.data[3];
+            uint8_t button_3 = can_pack.data[4];
+            uint8_t slider_left = can_pack.data[5];
+            uint8_t slider_right = can_pack.data[6];
         // }
+        
+        uint8_t referance = slider_to_persentage(slider_left);
+        uint16_t raw_pos = read_encoder();
+        uint8_t pos = raw_pos_to_persentage(raw_pos, max_pos_raw);
+        //
+        uint16_t u = P(pid, referance, pos);
+        //
+        // uint8_t motor_dir = 0;
+        // uint8_t motor_voltage = u;
+        // if (u < 0){
+        //     uint8_t motor_voltage = u * -1;
+        //     motor_dir = 1;
+        // }
+        //
+        printf("u: %d\n\r", u);
+        // printf("%d\n\r", can_pack.id);
+        printf("raw_r: %d\n\r", slider_left);
+        printf("pos: %d\n\r", pos);
+        printf("r: %d\n\r", referance);
+        // printf("motor_dir: %d\n\r", motor_dir);
+        // printf("intgeral: %d\n\r", get_integral());
 
-        /* printf("%d\n\r", getTimeMs()); */
     }
 }
