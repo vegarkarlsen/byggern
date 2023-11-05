@@ -1,7 +1,7 @@
 
 #include "ADC_driver.h"
 #include "CAN_controller.h"
-#include "JOYSTICK.h"
+#include "Multiboard_tools.h"
 #include "MCP2515_driver.h"
 #include "OLED_driver.h"
 #include "OLED_menu.h"
@@ -23,19 +23,11 @@
 #define MYUBRR FOSC / 16 / BAUD - 1
 #define F_CPU 16000000
 
-int8_t joy_x;
-int8_t joy_y;
-/* uint8_t slider_left; */
-/* uint8_t slider_right; */
 /**/
 
 int option_select = 0;
 int menu_level = 0;
-/**/
-/* bool p0 = 0; */
-/* bool p1 = 0; */
-/* bool p2 = 0; */
-/**/
+
 /* uint8_t test; */
 
 /* void testMCP(){ */
@@ -96,7 +88,7 @@ int main(void) {
     canPack_t message;
     while (1) {
         _delay_ms(100);
-        send_JOYSTICK_to_CAN(joy_x, joy_y, message);
+        send_Multiboard_to_CAN(message);
 
         /* message = CAN_revice(0); */
         /* printf("ID: %d\r\nlen %d\r\ndata: %c%c\r\n", message.ID, message.len,
