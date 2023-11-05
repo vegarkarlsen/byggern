@@ -14,7 +14,7 @@
 void motor_init();
 
 // move the motor
-void move_motor(uint16_t value);
+void move_motor(uint16_t value, uint8_t direction);
 
 // write to dac
 void dac_write(uint16_t bin_voltage);

@@ -48,10 +48,12 @@ void motor_init(){
     PIOC->PIO_PUDR |= PIO_PC1 | PIO_PC2 | PIO_PC3 | PIO_PC4 | PIO_PC5;    
 
     /* DAC: */
+    // Enable pmc clock for DAC 
+    PMC->PMC_PCER1 |= PMC_PCER1_PID38;
     // Dissable write protection
     DACC->DACC_WPMR &= ~DACC_WPMR_WPEN;
-    // configure mode (free running mode, and using full word)
-    DACC->DACC_MR |= DACC_MR_TRGEN_DIS | DACC_MR_WORD_HALF;
+    // configure mode (free running mode, and using full word, select channel 1)
+    DACC->DACC_MR |= DACC_MR_TRGEN_DIS | DACC_MR_WORD_HALF | DACC_MR_USER_SEL_CHANNEL1;
     // Eanble DACC channel 1 = DAC1?
     DACC->DACC_CHER |= DACC_CHER_CH1;
 }

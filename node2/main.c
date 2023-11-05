@@ -44,11 +44,12 @@ int main() {
     configure_uart();
 
     // init_can();
-    // pwm_init();
+    pwm_init();
 
     // SysTick_Config(10500);
 
     ir_init();
+    motor_init();
 
     printf("Setup complete\n\r");
 
@@ -56,7 +57,9 @@ int main() {
 
     // CAN_MESSAGE can_pack;
     while (1) {
-        // joy_test(50, 6);
+        dac_write(2000);
+        joy_test(50, 6);
+        printf("DACC interput status register: %x\n\r", DACC->DACC_ISR);
         // printf("ADC: %d\n\r", read_ir_raw());
         // detect_goal(&goals);
         // printf("Goals: %d\n\r", goals);
