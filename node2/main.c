@@ -12,6 +12,7 @@
 #include "sam.h"
 #include "timer.h"
 #include "IR_driver.h"
+#include "motor_driver.h"
 
 //GLOBAL VARIABLES
 uint8_t goals = 0;

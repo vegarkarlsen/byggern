@@ -19,8 +19,13 @@ void move_motor(uint16_t value);
 // write to dac
 void dac_write(uint16_t bin_voltage);
 
+//Reset encoder
+void reset_encoder(); 
+
 // Read value from the motorbox's encoder
 uint16_t read_encoder();
+
+
 
 
 

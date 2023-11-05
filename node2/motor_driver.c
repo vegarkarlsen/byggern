@@ -93,8 +93,23 @@ uint16_t read_encoder(){
     return full_byte;
 }
 
+void reset_encoder(){
+    //encoder resets when MJ1 pin !RST is pulled low
+    //Set pin !RST low
+    PIOD->PIO_ODSR &= ~PIO_PD1;
+    //wait 100ms
+    uint8_t wait_ms =  getTimeMs();
+    uint8_t start_time = wait_ms;
+    while(wait_ms<start_time+100){
+        wait_ms = getTimeMs();
+    }
+    //Set pin !RST high
+    PIOD->PIO_ODSR |= PIO_PD1;
+
+}
+
 void dac_write(uint16_t bin_voltage){
-    // write value to DAC 12bit
+    // write value to DAC 12bit(max: 0xFFF)
     DACC->DACC_CDR = bin_voltage; 
 }
 
@@ -110,5 +125,6 @@ void move_motor(uint16_t value, uint8_t direction){
     else {
         PIOD->PIO_ODSR &= ~PIO_PD10;
     }
+    PIOD->PIO_ODSR &= ~PIO_PD9;
 
 }
