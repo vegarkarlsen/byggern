@@ -33,3 +33,8 @@ uint32_t getTimeMs(){
     return getTicks()/10;
 }
 
+void _ms_delay(uint32_t delay){
+    uint32_t time_now = getTimeMs();
+    while (getTimeMs() < (time_now + delay));
+}
+

@@ -18,3 +18,5 @@ uint32_t getTimeMs();
 uint32_t getTicks();
 
 void SysTick_Handler();
+
+void _ms_delay(uint32_t delay);

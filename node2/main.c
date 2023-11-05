@@ -15,6 +15,11 @@
 #include "IR_driver.h"
 #include "motor_driver.h"
 
+// #define DEBUG_MOTOR
+#include "log.h"
+
+
+
 //GLOBAL VARIABLES
 uint8_t goals = 0;
 
@@ -42,12 +47,9 @@ void motor_test(){
     enable_motor();
     uint32_t time_now = getTimeMs();
     printf("waiting\n\r");
-    while (getTimeMs() < time_now + 2000){
-        uint16_t motor_pos = read_encoder();
-        printf("%d\r\n", motor_pos);
-    } 
+    _ms_delay(200);
     move_motor(1, 1);
-    stop_motor(); 
+    stop_motor();
     printf("stopping motor\n\r");
 }
 
@@ -70,16 +72,24 @@ int main() {
     turn_on_inboard_led();
 
     printf("Setup complete\n\r");
+    uint16_t max_pos_raw = calibrate_encoder();
 
-    move_motor(25, 1);
-    motor_test();
+    // move_motor(25, 0);
+    // reset_encoder();
+    // motor_test();
 
     // CAN_MESSAGE can_pack;
     while (1) {
         // dac_write(4095);
         // joy_test(50, 6);
-        printf("0x%x\n\r", MJ2_pins);
+        // printf("%d\n\r", PIOC->PIO_PDSR);
+        // printf("0x%x\n\r", PIOC->PIO_PSR);
+        // printf("start\n\r");
+        // _ms_delay(2000);
 
+        // int16_t motor_pos = read_encoder();
+        // printf("%d\r\n", motor_pos);
+        printf("Max pos: %d\n\r", max_pos_raw);
         
 
 
