@@ -11,10 +11,10 @@ uint8_t detected_goal = 0;
 // ADC configuration, page 1317
 // using CH0: This is extrafunction of PA2 (see table 9-2 page 40) PA2 in arduino is AD7 on shild.
 void ir_init(){
+    // Enable pmc clock for ADC 
+    PMC->PMC_PCER1 |= PMC_PCER1_PID37;
     // Disable write protect
     ADC->ADC_WPMR &= ~ADC_WPMR_WPEN;
-    // Enable ADC-clock Perifial clock 1
-    PMC->PMC_PCER1 |= PMC_PCER1_PID37;
     // Mode register:
     // Dont wait for any triggers
     ADC->ADC_MR |= ADC_MR_FREERUN_ON; 
