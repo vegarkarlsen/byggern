@@ -74,10 +74,6 @@ int main() {
     printf("Setup complete\n\r");
     uint16_t max_pos_raw = calibrate_encoder();
 
-    // move_motor(25, 0);
-    // reset_encoder();
-    // motor_test();
-
     // CAN_MESSAGE can_pack;
     while (1) {
         // dac_write(4095);
@@ -89,7 +85,7 @@ int main() {
 
         // int16_t motor_pos = read_encoder();
         // printf("%d\r\n", motor_pos);
-        printf("Max pos: %d\n\r", max_pos_raw);
+        // printf("Max pos: %d\n\r", max_pos_raw);
         
 
 

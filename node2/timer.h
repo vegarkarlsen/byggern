@@ -1,5 +1,6 @@
 #pragma once
 #include "sam.h"
+#include "sam3x8e.h"
 #include <stdint.h>
 
 /* SysTick->CTRL */
@@ -20,3 +21,6 @@ uint32_t getTicks();
 void SysTick_Handler();
 
 void _ms_delay(uint32_t delay);
+
+// Pid interput
+/* void TC0_Handler(); */
