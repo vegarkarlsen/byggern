@@ -2,6 +2,7 @@
 #include "OLED_menu.h"
 #include "ADC_driver.h"
 #include "OLED_driver.h"
+#include "Multiboard_tools.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
@@ -73,7 +74,7 @@ void option_change(int8_t joy_val) {
     }
 }
 
-void menu_level_select(int8_t joy_val_x){
+void menu_level_select(int8_t joy_val_x, uint8_t *gamestate){
     /*---------------MENU LEVEL 0---------------*/
     if (option_select==0 && menu_level == 0 && joy_val_x > 0){
         menu_level = 1;
@@ -92,8 +93,14 @@ void menu_level_select(int8_t joy_val_x){
         menu_level = 0;
         option_select = 0;
     }
-    else if(option_select == 1 && menu_level == 1 && joy_val_x > 0){
+    else if(option_select == 2 && menu_level == 1 && joy_val_x > 0){
         //implement lives and time
+        menu_level = 0;
+        option_select = 0;
+        OLED_clear_screen();
+        OLED_print8("PLAYING");
+        *gamestate = 1;
+        //send_game_state(*game_state);
     }
     /*----------------MENU LEVEL 2----------------*/
     else if(option_select == 2 && menu_level == 2 && joy_val_x < 0){

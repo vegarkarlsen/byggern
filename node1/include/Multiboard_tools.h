@@ -5,11 +5,11 @@
 #include <stdint.h>
 
 //function to create can message for node 2
-void send_Multiboard_to_CAN(canPack_t message);
+void send_Multiboard_to_CAN();
 
 typedef struct goal_pack {
     uint8_t goals;
-    uint16_t higscore;
+    uint16_t highscore;
     
 } goal_pack_t;
 

@@ -4,7 +4,7 @@
 #include "USART_driver.h"
 #include <stdint.h>
 
-void send_Multiboard_to_CAN(canPack_t message) {
+void send_Multiboard_to_CAN() {
     //Data 0 = x axis joystick
     //Data 1 = y axis joystick
     //Data 2 = 
@@ -12,6 +12,7 @@ void send_Multiboard_to_CAN(canPack_t message) {
     //Data 4 = 
     //Data 5 = slider left
     //Data 6 = slider right
+    canPack_t message;
     int8_t x_joy = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 3);
     int8_t y_joy = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 3);
     bool button_1 = PINB & (1 << PB0);
@@ -37,7 +38,7 @@ void send_Multiboard_to_CAN(canPack_t message) {
 goal_pack_t unpack_goal_pack(canPack_t canpack){
     goal_pack_t g;
     g.goals = canpack.data[0];
-    g.higscore = (canpack.data[1] << 8) | canpack.data[2];
+    g.highscore = (canpack.data[1] << 8) | canpack.data[2];
     return g;
 }
 

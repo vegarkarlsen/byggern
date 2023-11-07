@@ -29,6 +29,8 @@ int option_select = 0;
 int menu_level = 0;
 int8_t joy_y;
 int8_t joy_x;
+uint8_t game_state = 0;
+uint16_t highscore = 0;
 bool button_left;
 
 /* uint8_t test; */
@@ -104,8 +106,23 @@ int main(void) {
         joy_y = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 20);
         // printf(joy_y);
         option_change(joy_y);
-        menu_level_select(joy_x);
         home_screen_print();
+        menu_level_select(joy_x, &game_state);
+        while(game_state){
+            send_Multiboard_to_CAN();
+            CAN_revice(&message, 0);
+            CAN_print(&message);
+            goal_pack_t goal_pack = unpack_goal_pack(message);
+            printf("GOALS: %d\n\r", goal_pack.goals);
+            if (goal_pack.goals == 3){
+                uint16_t check_high = goal_pack.highscore;
+                if(check_high > highscore){
+                    highscore = check_high;
+                }
+                game_state = 0;
+            }
+            send_game_state(game_state);
+        }
 
         /*------------AFTER GAME START---------*/
         //while game alive: do messages n stuff
