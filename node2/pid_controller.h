@@ -20,7 +20,7 @@ typedef struct PID_const {
 
 void update_integral(int16_t current_deviation);
 
-uint16_t get_integral();
+int16_t get_integral();
 
 // referance needs to go between 0 and encoder max value
 int16_t PI(PID_t pid, uint16_t referance, uint16_t pos);

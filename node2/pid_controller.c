@@ -4,15 +4,18 @@
 #include "motor_driver.h"
 #include <stdint.h>
 #include <stdio.h>
+#include "uart_and_printf/printf-stdarg.h"
+#include "uart_and_printf/uart.h"
 
-volatile int16_t integral = 0;
+int16_t integral = 0;
+int16_t previus_integral = 0;
 
 void update_integral(int16_t current_deviation){
+    printf("integral: %d\n\r", integral);
     integral += current_deviation; 
 }
 
-uint16_t get_integral(){
-    printf("hei how i am update_integral\n\r");
+int16_t get_integral(){
     return integral;
 }
 
@@ -28,16 +31,33 @@ int16_t P(PID_t pid, uint16_t referance, uint16_t pos){
 int16_t PI(PID_t pid, uint16_t referance, uint16_t pos){
 
     // Get deviation
-    int16_t e = pos - referance;
-    printf("e: %d\n\r",e);
+    int16_t e = (pos - referance);
+    // printf("e: %d\n\r", e);
 
     // update integral
     update_integral(e);
     
-    float K_P_prod = pid.K_P * e;
-    float K_I_prod = pid.T * pid.K_I * integral;
-    printf("const part: %d\n\r", K_P_prod);
-    printf("I part : %d\n\r", K_I_prod);
+    float K_P_prod = pid.K_P * (float)e;
+    float K_I_prod = pid.T * pid.K_I * (float)integral;
+    
+    // printf("const part: %d\n\r", (int)K_P_prod);
+    // printf("I part : %d\n\r", (int)K_I_prod);
 
-    return (int16_t) (K_P_prod + K_I_prod);
+    int16_t u = (K_P_prod + K_I_prod);
+
+    // Antiwindup
+    if (u > 100){
+    u = 100;
+        integral = previus_integral;
+    }
+    else if (u < -100) {
+        u = -100;
+        integral = previus_integral;
+    }
+    
+    else {
+        previus_integral = integral;
+    }
+
+    return u;
 }
