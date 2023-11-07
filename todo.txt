@@ -1,0 +1,8 @@
+
+
+- send goal from node2 - node1
+- make menu
+- start game from menu
+- end game, from node2 (send to node1)
+    game ends on button clikc or loosing. 
+- Controll servo

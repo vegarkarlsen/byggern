@@ -103,7 +103,7 @@ int main() {
 
     // set PID values
     PID_t pid = {
-        0.8, 1.2, 1, 0.1
+        0.8, 0.7, 1, 0.1
     };
 
     CAN_MESSAGE can_pack;
