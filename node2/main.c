@@ -1,3 +1,5 @@
+#include "can_handling.h"
+#include "compiler.h"
 #include "pio/pio_sam3x8e.h"
 #include "sam3x8e.h"
 #include "timer.h"
@@ -15,6 +17,9 @@
 #include "IR_driver.h"
 #include "motor_driver.h"
 #include "pid_controller.h"
+
+#include "can_handling.h"
+#include "can_interrupt.h"
 
 
 //GLOBAL VARIABLES
@@ -86,6 +91,8 @@ int main() {
 
     printf("Setup complete\n\r");
     uint16_t max_pos_raw = calibrate_encoder();
+    // move_motor(25, 1);
+    enable_motor();
 
     // set PID values
     PID_t pid = {
@@ -104,50 +111,43 @@ int main() {
         // int16_t motor_pos = read_encoder();
         // printf("%d\r\n", motor_pos);
         // printf("Max pos: %d\n\r", max_pos_raw);
-        
 
-
-        // uint16_t test = dac_write_percentage(120);
+        printf("----------------------------------------\n\r");
+        multiboard_t *multiboard = get_global_multiboard_vars();
+        printf("slider_left %d\n\r", multiboard->slider_left);
         
-        // printf("DACC interput status register: %x\n\r", DACC->DACC_ISR);
-        // printf("ADC: %d\n\r", read_ir_raw());
+        
         // detect_goal(&goals);
         // printf("Goals: %d\n\r", goals);
 
 
 
-        // can_send(&can_pack, 0);
-        uint8_t status = can_receive(&can_pack, 0);
-        can_print(&can_pack);
-        // joystick values
-        // if (can_pack.id == 7){
-            int8_t x = can_pack.data[0];
-            int8_t y = can_pack.data[1];
-            uint8_t button_1 = can_pack.data[2];
-            uint8_t button_2 = can_pack.data[3];
-            uint8_t button_3 = can_pack.data[4];
-            uint8_t slider_left = can_pack.data[5];
-            uint8_t slider_right = can_pack.data[6];
-        // }
-        
-        uint8_t referance = slider_to_persentage(slider_left);
+        //
+        uint8_t referance = slider_to_persentage(multiboard->slider_left);
+        printf("maped referance: %d\n\r", referance);
         uint16_t raw_pos = read_encoder();
         uint8_t pos = raw_pos_to_persentage(raw_pos, max_pos_raw);
+        printf("pos (raw, real): (%d, %d)\n\r", raw_pos, pos);
+        // //
+        int16_t u = P(pid, referance, pos);
+        printf("using p, u=%d\n\r", u);
+        uint8_t motor_dir = 1;
+        int8_t motor_voltage = u;
+        if (u < 0){
+            motor_voltage = u * -1;
+            motor_dir = 0;
+        }
+        printf("u=%d, dir=%d\n\r", motor_voltage, motor_dir);
+        move_motor(u, motor_dir);
+        // printf("----------------------------------------\n\r");
+
+
         //
-        uint16_t u = P(pid, referance, pos);
-        //
-        // uint8_t motor_dir = 0;
-        // uint8_t motor_voltage = u;
-        // if (u < 0){
-        //     uint8_t motor_voltage = u * -1;
-        //     motor_dir = 1;
-        // }
-        //
-        printf("u: %d\n\r", u);
+        // printf("u: %d\n\r", u);
         // printf("%d\n\r", can_pack.id);
-        printf("raw_r: %d\n\r", slider_left);
-        printf("pos: %d\n\r", pos);
-        printf("r: %d\n\r", referance);
+        // printf("raw_r: %d\n\r", slider_left);
+        // printf("pos: %d\n\r", pos);
+        // printf("r: %d\n\r", referance);
         // printf("motor_dir: %d\n\r", motor_dir);
         // printf("intgeral: %d\n\r", get_integral());
 
