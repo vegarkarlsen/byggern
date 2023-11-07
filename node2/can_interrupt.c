@@ -58,6 +58,7 @@ void CAN0_Handler( void )
         if (message.id == 7){
             update_multiboard_vars(&message);
         } 
+        //
         else if (message.id == 1) { 
             update_game_state_vars(&message);    
         }
@@ -79,7 +80,9 @@ void CAN0_Handler( void )
         // m.id = 2;
         // m.data_length = 1;
         // m.data[0] = 5;
-        can_send(prepere_goals_package(), 0);
+        CAN_MESSAGE m = prepere_goals_package();
+        can_print(&m);
+        can_send(&m, 0);
 		
 	//Disable interrupt
 		CAN0->CAN_IDR = CAN_IER_MB0;

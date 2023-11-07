@@ -27,7 +27,7 @@ void update_multiboard_vars(CAN_MESSAGE *message);
 multiboard_t *get_global_multiboard_vars();
 
 
-CAN_MESSAGE *prepere_goals_package();
+CAN_MESSAGE prepere_goals_package();
 void update_game_state_vars(CAN_MESSAGE *message);
 uint8_t *get_game_state_global();
 uint8_t *get_goals_global();

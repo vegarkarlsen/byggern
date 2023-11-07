@@ -42,12 +42,12 @@ uint8_t *get_goals_global(){
     return &goals;
 }
 
-CAN_MESSAGE *prepere_goals_package(){
+CAN_MESSAGE prepere_goals_package(){
     uint8_t *g = get_game_state_global();
     // goal_pack.id = 2;
     // goal_pack.data_length = 1;
     goal_pack.data[0] = *g;
-    return &goal_pack;
+    return goal_pack;
 }
 
 void update_higscore(uint16_t game_alive){
