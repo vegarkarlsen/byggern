@@ -55,9 +55,12 @@ void CAN0_Handler( void )
 			printf("CAN0 message arrived in non-used mailbox\n\r");
 		}
 
-        if (message.data_length == 7){
+        if (message.id == 7){
             update_multiboard_vars(&message);
         } 
+        else if (message.id == 1) { 
+            update_game_state_vars(&message);    
+        }
         // can_print(&message);
 
 		if(DEBUG_INTERRUPT)printf("message id: %d\n\r", message.id);
@@ -72,11 +75,11 @@ void CAN0_Handler( void )
 	if(can_sr & CAN_SR_MB0)
 	{
 		if(DEBUG_INTERRUPT) printf("CAN0 MB0 ready to send \n\r");
-        CAN_MESSAGE m;
-        m.id = 2;
-        m.data_length = 1;
-        m.data[0] = 5;
-        can_send(&m, 0);
+        // CAN_MESSAGE m = prepere_goals_package();
+        // m.id = 2;
+        // m.data_length = 1;
+        // m.data[0] = 5;
+        can_send(prepere_goals_package(), 0);
 		
 	//Disable interrupt
 		CAN0->CAN_IDR = CAN_IER_MB0;

@@ -10,13 +10,7 @@
 #include "sam.h"
 #include "can_controller.h"
 
-            /* int8_t x = message.data[0]; */
-            /* int8_t y = message.data[1]; */
-            /* uint8_t button_1 = message.data[2]; */
-            /* uint8_t button_2 = message.data[3]; */
-            /* uint8_t button_3 = message.data[4]; */
-            /* uint8_t slider_left = message.data[5]; */
-            /* uint8_t slider_right = message.data[6]; */
+
 
 typedef struct multiboard_t{
     int8_t joystick_x;
@@ -31,3 +25,11 @@ typedef struct multiboard_t{
 
 void update_multiboard_vars(CAN_MESSAGE *message);
 multiboard_t *get_global_multiboard_vars();
+
+
+CAN_MESSAGE *prepere_goals_package();
+void update_game_state_vars(CAN_MESSAGE *message);
+uint8_t *get_game_state_global();
+uint8_t *get_goals_global();
+
+void update_higscore(uint16_t game_alive);
