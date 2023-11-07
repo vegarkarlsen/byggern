@@ -14,16 +14,17 @@ void solenoid_init(){
     // PIOD->PIO_PUDR |= SOLENOID_PIN;
     // output write enable
     PIOD->PIO_OWER |= SOLENOID_PIN;
-    // start with on
-    solenoid_on();
+    // start with solenoid off 
+    solenoid_off();
 
 }
     // PIOD->PIO_PUDR |= PIO_PD2 | PIO_PD9 | PIO_PD10;
 
+// Solnoid is inverted
 void solenoid_on(){
-    PIOD->PIO_ODSR |= SOLENOID_PIN;
-}
-
-void solenoid_off(){
     PIOD->PIO_ODSR &= ~SOLENOID_PIN;
+}
+// solnoid is inverted
+void solenoid_off(){
+    PIOD->PIO_ODSR |= SOLENOID_PIN;
 }
