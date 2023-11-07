@@ -2,6 +2,7 @@
 #include "ADC_driver.h"
 #include "CAN_controller.h"
 #include "USART_driver.h"
+#include <stdint.h>
 
 void send_Multiboard_to_CAN(canPack_t message) {
     //Data 0 = x axis joystick
@@ -31,3 +32,22 @@ void send_Multiboard_to_CAN(canPack_t message) {
     CAN_print(&message);
     CAN_send(&message, 1);
 }
+
+
+goal_pack_t unpack_goal_pack(canPack_t canpack){
+    goal_pack_t g;
+    g.goals = canpack.data[0];
+    g.higscore = (canpack.data[1] << 8) | canpack.data[2];
+    return g;
+}
+
+void send_game_state(uint8_t game_state){
+    canPack_t game_state_pack;
+    game_state_pack.ID = 1;
+    game_state_pack.len = 1;
+    game_state_pack.data[0] = game_state;
+    CAN_send(&game_state_pack, 2);
+}
+
+
+

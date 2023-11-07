@@ -102,10 +102,11 @@ int main(void) {
         _delay_ms(500);
         joy_x = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 20);
         joy_y = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 20);
-        printf(joy_y);
+        // printf(joy_y);
         option_change(joy_y);
         menu_level_select(joy_x);
         home_screen_print();
+
         /*------------AFTER GAME START---------*/
         //while game alive: do messages n stuff
 
