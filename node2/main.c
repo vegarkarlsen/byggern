@@ -96,7 +96,7 @@ int main() {
 
     // set PID values
     PID_t pid = {
-        1, 1, 1, 30
+        0.5, 1, 1, 0.075
     };
 
     CAN_MESSAGE can_pack;
@@ -123,6 +123,7 @@ int main() {
 
 
         //
+        uint32_t t_be = getTimeMs();
         uint8_t referance = slider_to_persentage(multiboard->slider_left);
         printf("maped referance: %d\n\r", referance);
         uint16_t raw_pos = read_encoder();
@@ -138,7 +139,10 @@ int main() {
             motor_dir = 0;
         }
         printf("u=%d, dir=%d\n\r", motor_voltage, motor_dir);
-        move_motor(u, motor_dir);
+        move_motor(u, motor_voltage);
+        uint32_t t_af = getTimeMs();
+        uint32_t t_tot = t_af-t_be;
+        printf("time: %d\n\r", t_tot);
         // printf("----------------------------------------\n\r");
 
 

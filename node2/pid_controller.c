@@ -17,11 +17,12 @@ uint16_t get_integral(){
 }
 
 int16_t P(PID_t pid, uint16_t referance, uint16_t pos){
-    int16_t e = (int16_t)(pos - referance);
+    int16_t e = (int16_t)((pos - referance));
+
     // printf("deviation: %d\n\r", e);
 
-    int16_t u = (int16_t)pid.K_P * e;
-    return u;
+    float u = (float)pid.K_P * e;
+    return (int16_t)u;
 }
 
 int16_t PI(PID_t pid, uint16_t referance, uint16_t pos){
@@ -33,10 +34,10 @@ int16_t PI(PID_t pid, uint16_t referance, uint16_t pos){
     // update integral
     update_integral(e);
     
-    int16_t K_P_prod = pid.K_P * e;
-    int16_t I_prod = pid.T * pid.K_I * integral;
+    float K_P_prod = pid.K_P * e;
+    float K_I_prod = pid.T * pid.K_I * integral;
     printf("const part: %d\n\r", K_P_prod);
-    printf("I part : %d\n\r", I_prod);
+    printf("I part : %d\n\r", K_I_prod);
 
-    return K_P_prod + I_prod;
+    return (int16_t) (K_P_prod + K_I_prod);
 }

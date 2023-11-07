@@ -10,10 +10,11 @@
 #include "motor_driver.h"
 
 typedef struct PID_const {
-    uint16_t K_P;
-    uint16_t K_I;
-    uint16_t K_D;
-    uint16_t T;
+    float K_P;
+    float K_I;
+    float K_D;
+    float T;
+
 }PID_t;
 
 

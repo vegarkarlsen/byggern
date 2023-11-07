@@ -87,7 +87,7 @@ uint16_t read_encoder(){
     // PIOD->PIO_CODR |= PIO_PD2;
 // 3: Wait approx. 20 microseconds for output to settle
     // uint8_t start_time = wait_ms;
-    _ms_delay(20);
+    _ms_delay(2);
 // 4: Read MJ2 to get high byte
 //since PD1-PD8 is in use and not PD0, push PD0 out
 //the size of PDSR function is limited to 8 bit by uint8_t
@@ -101,7 +101,7 @@ uint16_t read_encoder(){
 // 5: Set SEL high to output low byte
     PIOD->PIO_ODSR |= MOTOR_SEL;
 // 6: Wait approx. 20 microseconds
-    _ms_delay(20);
+    _ms_delay(2);
 // 7: Read MJ2 to get low byte
 //since PD1-PD8 is in use and not PD0, push PD0 out
 //the size of PDSR function is limited to 8 bit by uint8_t
@@ -180,12 +180,12 @@ void move_motor(uint16_t value, uint8_t direction){
 }
 
 uint16_t calibrate_encoder(){
-    move_motor(50, 1);
+    move_motor(80, 1);
     enable_motor();
-    _ms_delay(500);
+    _ms_delay(600);
     // stop_motor();
     reset_encoder();
-    move_motor(50, 0);
+    move_motor(80, 0);
     _ms_delay(600);
     stop_motor();
     return read_encoder();
