@@ -6,9 +6,11 @@
 #include <stdio.h>
 #include <util/delay.h>
 
-const char *page_1[] = {"OPTION 1", "OPTION 2", "OPTION 3"};
-const char *page_2[] = {"TEST", "RETURN"};
-const char **menu[] = {page_1, page_2};
+const char *page_1[] = {"START GAME", "HIGHSCORE", "RULES"};
+const char *page_2[] = {"DO YOU WISH ", "TO START?", "YES", "NO"};
+const char *page_3[] = {"HIGHSCORE: ", /*show goals*/ "YES", "RETURN"};
+const char *page_4[] = {"THERE", "ARE", "NO", "RULES", "EXIT"};
+const char **menu[] = {page_1, page_2, page_3, page_4};
 
 int menu_size;
 
@@ -26,10 +28,26 @@ void home_screen_print() {
         }
     } else if (menu_level == 1) {
         menu_size = sizeof(page_2) / sizeof(page_2[0]);
-        if (option_select < 0) {
-            option_select = 1;
-        } else if (option_select > 1) {
-            option_select = 0;
+        if (option_select < 2) {
+            option_select = 3;
+        } else if (option_select > 3) {
+            option_select = 2;
+        }
+    }
+    else if(menu_level == 2){
+        menu_size = sizeof(page_3) / sizeof(page_3[0]);
+        if (option_select < 2) {
+            option_select = 2;
+        } else if (option_select > 2) {
+            option_select = 2;
+        }
+    }
+    else if(menu_level == 3){
+        menu_size = sizeof(page_4) / sizeof(page_4[0]);
+        if (option_select < 4) {
+            option_select = 4;
+        } else if (option_select > 4) {
+            option_select = 4;
         }
     }
     for (uint8_t i = 0; i < menu_size; i++) {
@@ -43,7 +61,7 @@ void home_screen_print() {
     };
 }
 
-void option_change(int joy_val) {
+void option_change(int8_t joy_val) {
     if (joy_val > 0) {
         option_select -= 1;
         // home_screen_print();
@@ -55,12 +73,37 @@ void option_change(int joy_val) {
     }
 }
 
-void menu_level_select() {
-    if (option_select == 0 || menu_level == 0) {
+void menu_level_select(int8_t joy_val_x){
+    /*---------------MENU LEVEL 0---------------*/
+    if (option_select==0 && menu_level == 0 && joy_val_x > 0){
         menu_level = 1;
+        option_select = 2;
+    }
+    else if(option_select == 1 && menu_level == 0 && joy_val_x > 0){
+        menu_level = 2;
+        option_select = 2;
+    }
+    else if(option_select == 2 && menu_level == 0 && joy_val_x > 0){
+        menu_level = 3;
+        option_select = 4;
+    }
+    /*----------------MENU LEVEL 1----------------*/
+    else if(option_select == 3 && menu_level == 1 && joy_val_x < 0){
+        menu_level = 0;
+        option_select = 0;
+    }
+    else if(option_select == 1 && menu_level == 1 && joy_val_x > 0){
+        //implement lives and time
+    }
+    /*----------------MENU LEVEL 2----------------*/
+    else if(option_select == 2 && menu_level == 2 && joy_val_x < 0){
+        menu_level = 0;
+        option_select = 0;
+    }
+    /*----------------MENU LEVEL 3----------------*/
+    else if(option_select == 4 && menu_level == 3 && joy_val_x < 0){
+        menu_level = 0;
+        option_select = 0;
     }
 
-    else if (option_select == 1 || menu_level == 1) {
-        menu_level = 0;
-    }
 }

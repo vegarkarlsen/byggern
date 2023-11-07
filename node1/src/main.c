@@ -27,6 +27,9 @@
 
 int option_select = 0;
 int menu_level = 0;
+int8_t joy_y;
+int8_t joy_x;
+bool button_left;
 
 /* uint8_t test; */
 
@@ -95,10 +98,20 @@ int main(void) {
     /* }; */
     canPack_t message;
     while (1) {
-        _delay_ms(100);
-        send_Multiboard_to_CAN(message);
+        /*----------BEFORE GAME START-----------*/
+        _delay_ms(500);
+        joy_x = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 20);
+        joy_y = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 20);
+        printf(joy_y);
+        option_change(joy_y);
+        menu_level_select(joy_x);
+        home_screen_print();
+        /*------------AFTER GAME START---------*/
+        //while game alive: do messages n stuff
+
+        //send_Multiboard_to_CAN(message);
         
-        revice_and_print_nod1();
+        //revice_and_print_nod1();
         
 
         /* message = CAN_revice(0); */
