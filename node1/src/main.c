@@ -57,6 +57,14 @@ void test_11_bit() {
     uint16_t data = (high << 3) | low;
     printf("high: %x, low: %x, data: %2d \r\n", high, low, data);
 }
+void revice_and_print_nod1(){
+
+    canPack_t t;
+    CAN_revice(&t, 0);
+    printf("id: %d\n\r", t.ID);
+    printf("len: %d\n\r", t.len);
+    printf("data: %d\n\r", t.data[0]);
+}
 
 int main(void) {
     USART0_init(MYUBRR);
@@ -89,6 +97,9 @@ int main(void) {
     while (1) {
         _delay_ms(100);
         send_Multiboard_to_CAN(message);
+        
+        revice_and_print_nod1();
+        
 
         /* message = CAN_revice(0); */
         /* printf("ID: %d\r\nlen %d\r\ndata: %c%c\r\n", message.ID, message.len,

@@ -72,6 +72,11 @@ void CAN0_Handler( void )
 	if(can_sr & CAN_SR_MB0)
 	{
 		if(DEBUG_INTERRUPT) printf("CAN0 MB0 ready to send \n\r");
+        CAN_MESSAGE m;
+        m.id = 2;
+        m.data_length = 1;
+        m.data[0] = 5;
+        can_send(&m, 0);
 		
 	//Disable interrupt
 		CAN0->CAN_IDR = CAN_IER_MB0;
