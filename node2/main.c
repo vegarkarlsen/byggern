@@ -2,6 +2,7 @@
 #include "compiler.h"
 #include "pio/pio_sam3x8e.h"
 #include "sam3x8e.h"
+#include "solenoid.h"
 #include "timer.h"
 #include "uart_and_printf/printf-stdarg.h"
 #include "uart_and_printf/uart.h"
@@ -24,6 +25,7 @@
 
 //GLOBAL VARIABLES
 uint8_t goals = 0;
+
 int8_t x;
 int8_t y; 
 uint8_t button_1;
@@ -63,7 +65,9 @@ void motor_test(){
 }
 
 uint8_t slider_to_persentage(uint8_t slider_val){
-    return (slider_val*100/255);
+    uint16_t scaled = (slider_val*100)/255;
+
+    return (uint8_t)scaled;
 }
 
     // return (input - i_min) * (o_max - o_min) / (i_max - i_min) + o_min;
@@ -94,44 +98,36 @@ int main() {
     // move_motor(25, 1);
     enable_motor();
 
+    solenoid_init();
+    solenoid_off();
+
     // set PID values
     PID_t pid = {
-        0.5, 1, 1, 0.075
+        0.8, 1.2, 1, 0.1
     };
 
     CAN_MESSAGE can_pack;
     while (1) {
-        // dac_write(4095);
-        // joy_test(50, 6);
-        // printf("%d\n\r", PIOC->PIO_PDSR);
-        // printf("0x%x\n\r", PIOC->PIO_PSR);
-        // printf("start\n\r");
-        // _ms_delay(2000);
 
-        // int16_t motor_pos = read_encoder();
-        // printf("%d\r\n", motor_pos);
-        // printf("Max pos: %d\n\r", max_pos_raw);
+        detect_goal(&goals);
+        printf("Goals: %d\n\r", goals);
 
+        
+        /* ----------------------- PID ------------------------*/
+        uint32_t t_be = getTimeMs();
         printf("----------------------------------------\n\r");
         multiboard_t *multiboard = get_global_multiboard_vars();
         printf("slider_left %d\n\r", multiboard->slider_left);
-        
-        
-        // detect_goal(&goals);
-        // printf("Goals: %d\n\r", goals);
 
-
-
-        //
-        uint32_t t_be = getTimeMs();
         uint8_t referance = slider_to_persentage(multiboard->slider_left);
-        printf("maped referance: %d\n\r", referance);
+        // uint8_t referance = Abs(multiboard->joystick_x);
+        printf("referance: (raw, real) (%d, %d)\n\r", multiboard->slider_left, referance);
         uint16_t raw_pos = read_encoder();
         uint8_t pos = raw_pos_to_persentage(raw_pos, max_pos_raw);
         printf("pos (raw, real): (%d, %d)\n\r", raw_pos, pos);
         // //
-        int16_t u = P(pid, referance, pos);
-        printf("using p, u=%d\n\r", u);
+        int16_t u = PI(pid, referance, pos);
+        // printf("using p, u=%d\n\r", u);
         uint8_t motor_dir = 1;
         int8_t motor_voltage = u;
         if (u < 0){
@@ -139,21 +135,20 @@ int main() {
             motor_dir = 0;
         }
         printf("u=%d, dir=%d\n\r", motor_voltage, motor_dir);
-        move_motor(u, motor_voltage);
+        move_motor(motor_voltage, motor_dir);
         uint32_t t_af = getTimeMs();
         uint32_t t_tot = t_af-t_be;
         printf("time: %d\n\r", t_tot);
-        // printf("----------------------------------------\n\r");
+        /* ----------------------- PID ------------------------*/
 
-
-        //
-        // printf("u: %d\n\r", u);
-        // printf("%d\n\r", can_pack.id);
-        // printf("raw_r: %d\n\r", slider_left);
-        // printf("pos: %d\n\r", pos);
-        // printf("r: %d\n\r", referance);
-        // printf("motor_dir: %d\n\r", motor_dir);
-        // printf("intgeral: %d\n\r", get_integral());
+        /* -------------------- SOLENOID ----------------------*/
+        if (multiboard->left_button){
+            solenoid_off();
+        } 
+        else {
+            solenoid_on();
+        }
+        /* -------------------- SOLENOID ----------------------*/
 
     }
 }
