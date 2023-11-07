@@ -17,9 +17,11 @@ uint16_t get_integral(){
 }
 
 int16_t P(PID_t pid, uint16_t referance, uint16_t pos){
-    uint16_t e = pos - referance;
-    return pid.K_P * e;
+    int16_t e = (int16_t)(pos - referance);
+    // printf("deviation: %d\n\r", e);
 
+    int16_t u = (int16_t)pid.K_P * e;
+    return u;
 }
 
 int16_t PI(PID_t pid, uint16_t referance, uint16_t pos){
