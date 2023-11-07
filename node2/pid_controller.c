@@ -33,6 +33,9 @@ int16_t PI(PID_t pid, uint16_t referance, uint16_t pos){
     // Get deviation
     int16_t e = (pos - referance);
     // printf("e: %d\n\r", e);
+    if (e < 5 && e > -5){
+        e = 0;
+    }
 
     // update integral
     update_integral(e);
