@@ -144,8 +144,11 @@ void dac_write_percentage(uint8_t percent){
         percent = 100;
     }
 
+    // return (input - i_min) * (o_max - o_min) / (i_max - i_min) + o_min;
     uint16_t max_bin_votalge = 4095;
-    uint32_t bin_voltage = (percent * max_bin_votalge)/100;
+    uint16_t min_bin_voltage = 1100;
+    // uint32_t bin_voltage = (percent * max_bin_votalge)/100;
+    uint32_t bin_voltage = percent * (max_bin_votalge - min_bin_voltage)/100 + min_bin_voltage;
     if (DEBUG){
         printf("[motor_driver]: Writing to dac: %d\n\r", bin_voltage);
     }
