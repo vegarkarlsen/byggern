@@ -5,7 +5,9 @@
 #include <stdint.h>
 
 //function to create can message for node 2
-void send_Multiboard_to_CAN();
+/* void send_Multiboard_to_CAN(); */
+/* void send_Multiboard_to_CAN(canPack_t *message); */
+void send_Multiboard_to_CAN(canPack_t *message, uint8_t game_state);
 
 typedef struct goal_pack {
     uint8_t goals;
@@ -13,5 +15,5 @@ typedef struct goal_pack {
     
 } goal_pack_t;
 
-goal_pack_t unpack_goal_pack(canPack_t canpack);
+goal_pack_t unpack_goal_pack();
 void send_game_state(uint8_t game_state);

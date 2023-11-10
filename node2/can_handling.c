@@ -32,6 +32,8 @@ void update_multiboard_vars(CAN_MESSAGE *message){
     multiboard->joystick_button = message->data[4];
     multiboard->slider_left = message->data[5];
     multiboard->slider_right = message->data[6];
+    // multiboard->game_state = message->data[7];
+    *get_game_state_global() = message->data[7];
 }
 
 multiboard_t *get_global_multiboard_vars(){

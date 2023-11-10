@@ -62,10 +62,10 @@ void test_11_bit() {
     uint16_t data = (high << 3) | low;
     printf("high: %x, low: %x, data: %2d \r\n", high, low, data);
 }
-void revice_and_print_nod1(){
+void revice_and_print_node2(){
 
     canPack_t t;
-    CAN_revice(&t, 0);
+    CAN_revice(&t, 1);
     printf("id: %d\n\r", t.ID);
     printf("len: %d\n\r", t.len);
     printf("data: %d\n\r", t.data[0]);
@@ -99,6 +99,7 @@ int main(void) {
     /*     "halla" */
     /* }; */
     canPack_t message;
+    canPack_t revice_msg;
     while (1) {
         /*----------BEFORE GAME START-----------*/
         _delay_ms(500);
@@ -108,20 +109,28 @@ int main(void) {
         option_change(joy_y);
         home_screen_print();
         menu_level_select(joy_x, &game_state);
+        send_Multiboard_to_CAN(&message, game_state);
+
+        // CAN_revice(&revice_msg, 0);
+        // CAN_print(&revice_msg);
+
+        // revice_and_print_node2();
         while(game_state){
-            send_Multiboard_to_CAN();
-            CAN_revice(&message, 0);
-            CAN_print(&message);
-            goal_pack_t goal_pack = unpack_goal_pack(message);
-            printf("GOALS: %d\n\r", goal_pack.goals);
-            if (goal_pack.goals == 3){
-                uint16_t check_high = goal_pack.highscore;
-                if(check_high > highscore){
-                    highscore = check_high;
-                }
-                game_state = 0;
-            }
-            send_game_state(game_state);
+            send_Multiboard_to_CAN(&message, game_state);
+            // CAN_revice(&message, 0);
+            // CAN_print(&message);
+            // goal_pack_t goal_pack = unpack_goal_pack();
+
+            // printf("GOALS: %d\n\r", goal_pack.goals);
+            // if (goal_pack.goals > 3){
+            //     uint16_t check_high = goal_pack.highscore;
+            //     if(check_high > highscore){
+            //         highscore = check_high;
+            //     }
+                // game_state = 0;
+            // }
+            // send_game_state(game_state);
+        _delay_ms(100);
         }
 
         /*------------AFTER GAME START---------*/

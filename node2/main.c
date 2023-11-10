@@ -91,17 +91,18 @@ int main() {
     PID_t pid = {
         0.8, 0.7, 1, 0.1
     };
+    uint8_t *gs = get_game_state_global();
+    *gs = 0;
 
     printf("Setup complete\n\r");
     // CAN_MESSAGE can_pack;
     while (1) {
 
-        uint8_t *gs = get_game_state_global();
         stop_motor();
         if (*gs == 1){
             start_time = getTimeMs(); 
         }
-        printf("Game off\n\r");
+        // printf("Game off\n\r");
         while (*gs == 1){
             
             enable_motor();

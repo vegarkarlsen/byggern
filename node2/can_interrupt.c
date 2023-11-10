@@ -23,6 +23,7 @@
 
 #define DEBUG_INTERRUPT 0
 
+uint8_t old_goals = 0;
 /**
  * \brief CAN0 Interrupt handler for RX, TX and bus error interrupts
  *
@@ -57,11 +58,15 @@ void CAN0_Handler( void )
 
         if (message.id == 7){
             update_multiboard_vars(&message);
+            // can_print(&message);
+            // if (message.data_length == 8){
+            //     *get_game_state_global() = message.data[7];
+            // }
         } 
         //
-        else if (message.id == 1) { 
-            update_game_state_vars(&message);    
-        }
+        // else if (message.id == 1) { 
+        //     update_game_state_vars(&message);    
+        // }
         // can_print(&message);
 
 		if(DEBUG_INTERRUPT)printf("message id: %d\n\r", message.id);
@@ -76,13 +81,28 @@ void CAN0_Handler( void )
 	if(can_sr & CAN_SR_MB0)
 	{
 		if(DEBUG_INTERRUPT) printf("CAN0 MB0 ready to send \n\r");
+
+            CAN_MESSAGE sen_msg;
+            // uint8_t *global_goals = get_goals_global();
+            // if (*global_goals != old_goals){
+            //     old_goals = *global_goals;
+            // }
+            // sen_msg.id = 2;
+            // sen_msg.data_length = 1;
+            // sen_msg.data[0] = 3;
+            // can_send(&sen_msg, 0);
+            // can_print(&sen_msg);
+
+            // }
+
         // CAN_MESSAGE m = prepere_goals_package();
         // m.id = 2;
         // m.data_length = 1;
         // m.data[0] = 5;
-        CAN_MESSAGE m = prepere_goals_package();
-        can_print(&m);
-        can_send(&m, 0);
+        // CAN_MESSAGE m = prepere_goals_package();
+        // can_print(&m);
+        // can_send(&m, 0);
+        // can_print(&m);
 		
 	//Disable interrupt
 		CAN0->CAN_IDR = CAN_IER_MB0;

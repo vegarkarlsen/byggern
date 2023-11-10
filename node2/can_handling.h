@@ -20,6 +20,7 @@ typedef struct multiboard_t{
     uint8_t joystick_button;
     uint8_t slider_left;
     uint8_t slider_right;
+    uint8_t game_state;
 } multiboard_t;
 
 

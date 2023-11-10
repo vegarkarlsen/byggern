@@ -4,7 +4,7 @@
 #include "USART_driver.h"
 #include <stdint.h>
 
-void send_Multiboard_to_CAN() {
+void send_Multiboard_to_CAN(canPack_t *message, uint8_t game_state) {
     //Data 0 = x axis joystick
     //Data 1 = y axis joystick
     //Data 2 = 
@@ -12,7 +12,7 @@ void send_Multiboard_to_CAN() {
     //Data 4 = 
     //Data 5 = slider left
     //Data 6 = slider right
-    canPack_t message;
+    // canPack_t message;
     int8_t x_joy = read_joystick_channel_transformed(JOYSTICK_CHANNEL_X, 3);
     int8_t y_joy = read_joystick_channel_transformed(JOYSTICK_CHANNEL_y, 3);
     bool button_1 = PINB & (1 << PB0);
@@ -20,27 +20,38 @@ void send_Multiboard_to_CAN() {
     bool button_3 = !(PINB & (1 << PB2));
     uint8_t slider_left = (uint8_t)read_channel(SLIDER_CHANNEL_LEFT);
     uint8_t slider_right = (uint8_t)read_channel(SLIDER_CHANNEL_RIGHT);
-    message.ID = 7;
-    message.len = 7;
-    message.data[0] = x_joy;
-    message.data[1] = y_joy;
-    message.data[2] = button_1;
-    message.data[3] = button_2;
-    message.data[4] = button_3;
-    message.data[5] = slider_left;
-    message.data[6] = slider_right;
-    printf("%d\n\r", (int8_t)message.data[0]);
-    CAN_print(&message);
-    CAN_send(&message, 1);
+    message->ID = 7;
+    message->len =8;
+    message->data[0] = x_joy;
+    message->data[1] = y_joy;
+    message->data[2] = button_1;
+    message->data[3] = button_2;
+    message->data[4] = button_3;
+    message->data[5] = slider_left;
+    message->data[6] = slider_right;
+    message->data[7] = game_state;
+    // printf("%d\n\r", (int8_t)message.data[0]);
+    // CAN_print(&message);
+    CAN_send(message, 1);
 }
 
 
-goal_pack_t unpack_goal_pack(canPack_t canpack){
-    goal_pack_t g;
-    g.goals = canpack.data[0];
-    g.highscore = (canpack.data[1] << 8) | canpack.data[2];
-    return g;
-}
+// goal_pack_t unpack_goal_pack(){
+//     goal_pack_t g; 
+//     canPack_t canpack;
+//     CAN_revice(&canpack, 0);
+//
+//     if (canpack.ID == 2){
+//         g.goals = canpack.data[0];
+//     }
+//     else{
+//         g.goals = 0;
+//     }
+//     // goal_pack_t g;
+//     g.highscore = (canpack.data[1] << 8) | canpack.data[2];
+//
+//     return g;
+// }
 
 void send_game_state(uint8_t game_state){
     canPack_t game_state_pack;
