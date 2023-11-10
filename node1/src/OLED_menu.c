@@ -98,7 +98,12 @@ void menu_level_select(int8_t joy_val_x, uint8_t *gamestate){
         menu_level = 0;
         option_select = 0;
         OLED_clear_screen();
-        OLED_print8("PLAYING");
+        OLED_move(0, 0);
+        OLED_print("Press right button.", 5);
+        OLED_move(1, 0);
+        OLED_print("to exit.", 5);
+        OLED_move(4, 12);
+        OLED_print8("PLAYING..");
         *gamestate = 1;
         //send_game_state(*game_state);
     }
