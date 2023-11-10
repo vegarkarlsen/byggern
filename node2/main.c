@@ -79,7 +79,7 @@ uint8_t map_joystick_to_servo_voltage(int8_t joy){
     // else {
     //     servo_output = 50;
     // }
-    printf("servo: %d\r\n", servo_output);
+    // printf("servo: %d\r\n", servo_output);
     return servo_output;
 
 }
@@ -113,6 +113,7 @@ int main() {
     };
     uint8_t *gs = get_game_state_global();
     *gs = 0;
+    uint8_t *gol = get_goals_global(); 
 
     printf("Setup complete\n\r");
     // CAN_MESSAGE can_pack;
@@ -122,13 +123,14 @@ int main() {
         if (*gs == 1){
             start_time = getTimeMs(); 
         }
-        // printf("Game off\n\r");
+        // Reset goals when not playing.
+        *gol = 0;
         while (*gs == 1){
             
             enable_motor();
             /* ------------------ GOAL DETECTION ------------------*/        
-            detect_goal(get_goals_global());
-            // printf("Goals: %d\n\r", *get_goals_global());
+            detect_goal(gol);
+            printf("Deaths: %d\n\r", *gol);
             /* ------------------ GOAL DETECTION ------------------*/
             
             /* ----------------------- PID ------------------------*/
