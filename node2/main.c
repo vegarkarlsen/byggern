@@ -64,6 +64,26 @@ uint8_t raw_pos_to_persentage(uint16_t raw_pos, uint16_t max_pos){
     return (raw_pos * 100)/max_pos;
 }
 
+long map(long input, long i_min, long i_max, long o_max, long o_min) {
+    return (input - i_min) * (o_max - o_min) / (i_max - i_min) + o_min;
+}
+
+uint8_t map_joystick_to_servo_voltage(int8_t joy){
+    uint8_t servo_output = 50;
+    if (joy < 3){
+        servo_output = map(joy, 0, -100, 0, 50);
+    }
+    else if (joy > 3){
+        servo_output = map(joy, 0, 100, 100, 50);
+    }
+    // else {
+    //     servo_output = 50;
+    // }
+    printf("servo: %d\r\n", servo_output);
+    return servo_output;
+
+}
+
 
 int main() {
     SystemInit();
@@ -108,21 +128,21 @@ int main() {
             enable_motor();
             /* ------------------ GOAL DETECTION ------------------*/        
             detect_goal(get_goals_global());
-            printf("Goals: %d\n\r", *get_goals_global());
+            // printf("Goals: %d\n\r", *get_goals_global());
             /* ------------------ GOAL DETECTION ------------------*/
             
             /* ----------------------- PID ------------------------*/
             uint32_t t_be = getTimeMs();
-            printf("----------------------------------------\n\r");
+            // printf("----------------------------------------\n\r");
             multiboard_t *multiboard = get_global_multiboard_vars();
-            printf("slider_left %d\n\r", multiboard->slider_left);
+            // printf("slider_left %d\n\r", multiboard->slider_left);
 
             uint8_t referance = slider_to_persentage(multiboard->slider_left);
             // uint8_t referance = Abs(multiboard->joystick_x);
-            printf("referance: (raw, real) (%d, %d)\n\r", multiboard->slider_left, referance);
+            // printf("referance: (raw, real) (%d, %d)\n\r", multiboard->slider_left, referance);
             uint16_t raw_pos = read_encoder();
             uint8_t pos = raw_pos_to_persentage(raw_pos, max_pos_raw);
-            printf("pos (raw, real): (%d, %d)\n\r", raw_pos, pos);
+            // printf("pos (raw, real): (%d, %d)\n\r", raw_pos, pos);
             // //
             int16_t u = PI(pid, referance, pos);
             // printf("using p, u=%d\n\r", u);
@@ -132,11 +152,11 @@ int main() {
                 motor_voltage = u * -1;
                 motor_dir = 0;
             }
-            printf("u=%d, dir=%d\n\r", motor_voltage, motor_dir);
+            // printf("u=%d, dir=%d\n\r", motor_voltage, motor_dir);
             move_motor(motor_voltage, motor_dir);
             uint32_t t_af = getTimeMs();
             uint32_t t_tot = t_af-t_be;
-            printf("time: %d\n\r", t_tot);
+            // printf("time: %d\n\r", t_tot);
             /* ----------------------- PID ------------------------*/
 
             /* -------------------- SOLENOID ----------------------*/
@@ -150,7 +170,14 @@ int main() {
 
             /* ---------------------- SERVO -----------------------*/
             // servo handeling goes here
+            
+            // printf("raw_joystick %d\n\r", multiboard->joystick_x);
+            uint8_t servo_output = map_joystick_to_servo_voltage(multiboard->joystick_x);
+            // uint8_t servo_output = map_joystick_to_servo_voltage(slider_to_persentage(multiboard->slider_right));
+            set_pwn_duty_cycle(servo_output, 6);
+
             /* ---------------------- SERVO -----------------------*/
+            // _ms_delay(200);
         }
 
         uint32_t highscore = getTimeMs() - start_time;
