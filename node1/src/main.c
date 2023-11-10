@@ -117,20 +117,11 @@ int main(void) {
         // revice_and_print_node2();
         while(game_state){
             send_Multiboard_to_CAN(&message, game_state);
-            // CAN_revice(&message, 0);
-            // CAN_print(&message);
-            // goal_pack_t goal_pack = unpack_goal_pack();
-
-            // printf("GOALS: %d\n\r", goal_pack.goals);
-            // if (goal_pack.goals > 3){
-            //     uint16_t check_high = goal_pack.highscore;
-            //     if(check_high > highscore){
-            //         highscore = check_high;
-            //     }
-                // game_state = 0;
-            // }
-            // send_game_state(game_state);
-        _delay_ms(100);
+            _delay_ms(100);
+            // exit game
+            if (message.data[3] == 1){
+                game_state = 0;
+            }
         }
 
         /*------------AFTER GAME START---------*/
