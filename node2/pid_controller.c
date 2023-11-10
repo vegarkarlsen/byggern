@@ -11,7 +11,7 @@ int16_t integral = 0;
 int16_t previus_integral = 0;
 
 void update_integral(int16_t current_deviation){
-    printf("integral: %d\n\r", integral);
+    // printf("integral: %d\n\r", integral);
     integral += current_deviation; 
 }
 
